@@ -1,8 +1,8 @@
 {
   "name": "prayter",
-  "homepage": "htpps://gesab001.github.io/prayter-reactjs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/prayter-reactjs",
   "dependencies": {
     "@reach/router": "^1.3.4",
     "@testing-library/jest-dom": "^5.11.5",
