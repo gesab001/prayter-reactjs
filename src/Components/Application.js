@@ -11,12 +11,14 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import ProfilePage from "./ProfilePage";
 import PasswordReset from "./PasswordReset";
+import Home from "./Home";
 
 function Application() {
   const user = useContext(UserContext);
   return (
    user ?
-	<ProfilePage />
+	<Home />
+	
    :	
     <Router basename={process.env.PUBLIC_URL}>
       <div>

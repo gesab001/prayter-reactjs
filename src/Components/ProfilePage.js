@@ -1,19 +1,14 @@
-import React, { useContext } from "react";
+import React, { Component, useContext } from "react";
 import { UserContext } from "../providers/UserProvider";
-import {auth} from "../firebase";
+import { auth, generateUserDocument} from "../firebase";
+
 const ProfilePage = () => {
-  const user = useContext(UserContext);
-  const {displayName, email} = user;
-  return (
-    <div className	 = "mx-auto w-11/12 md:w-2/4 py-8 px-4 md:px-8">
-      <div className="flex border flex-col items-center md:flex-row md:items-start border-blue-400 px-3 py-4">
-       
-        <div className = "md:pl-4">
-        <h3 className = "italic">{displayName} {email}</h3>
-        </div>
-      </div>
-      <button className = "w-full py-3 bg-red-600 mt-4 text-white" onClick = {() => {auth.signOut()}}>Sign out</button>
-    </div>
-  ) 
-};
+    //const docRef = useContext(UserContext);
+	//console.log("profilepage: ", docRef.user);
+	//const user = docRef.user;
+    return (
+      <div>profile page </div>
+    );
+  
+}
 export default ProfilePage;

@@ -17,6 +17,7 @@ import "firebase/firestore";
 firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+export const db = firestore;
 	 
 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -42,7 +43,8 @@ export const generateUserDocument = async (user, additionalData) => {
       console.error("Error creating user document", error);
     }
   }
-  return getUserDocument(user.uid);
+
+  return getPrivatePrayers(user);
 };
 const getUserDocument = async uid => {
   if (!uid) return null;
@@ -56,4 +58,24 @@ const getUserDocument = async uid => {
   } catch (error) {
     console.error("Error fetching user", error);
   }
+};
+
+export const getPrivatePrayers =  async user => {
+	if (!user.uid) return null;
+	const { email} = user;
+	const privateprayers =  await db.collection("rooms").doc("prayer").collection("private").doc(user.uid).collection("messages").orderBy("date", 'asc').limit(5);
+	return {"user": user.email, "private": privateprayers};
+ 	
+
+}
+
+export const streamPrivatePrayers =  (user, observer) => {
+	return db.collection("rooms")
+	   .doc("prayer")
+	   .collection("private")
+	   .doc(user.uid)
+	   .collection("messages")
+	   .orderBy("date", 'asc')
+	   .limit(10)
+	   .onSnapShot(observer);
 };
