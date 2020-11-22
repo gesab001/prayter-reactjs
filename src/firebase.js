@@ -63,7 +63,7 @@ const getUserDocument = async uid => {
 export const getPrivatePrayers =  async user => {
 	if (!user.uid) return null;
 	const { email} = user;
-	const privateprayers =  await db.collection("rooms").doc("prayer").collection("private").doc(user.uid).collection("messages").orderBy("date", 'asc').limit(5);
+	const privateprayers =  await db.collection("rooms").doc("prayer").collection("private").doc(user.uid).collection("messages").orderBy("date", 'desc').limit(5);
 	return {"user": user.email, "private": privateprayers};
  	
 
