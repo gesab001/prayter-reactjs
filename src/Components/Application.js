@@ -17,8 +17,7 @@ function Application() {
   const user = useContext(UserContext);
   return (
    user ?
-	<Home />
-	
+	<Home></Home>
    :	
     <Router basename={process.env.PUBLIC_URL}>
       <div>
