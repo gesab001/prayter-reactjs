@@ -9,14 +9,15 @@ class App extends Component {
    state = {
 	 user: null,
      username: null,
-	 password: null
+	 password: null,
+	 error: null
    };
    componentDidMount = () => {
    
 	 auth.onAuthStateChanged(userAuth => {
-      	if (userAuth!=null) {
-			console.log(userAuth.uid);
-		  this.setState({user: userAuth.uid});
+		if (userAuth!=null){
+      	  console.log(userAuth.uid);
+		  this.setState({user: userAuth.uid});	
 		}		  
      });
    };
@@ -37,9 +38,12 @@ class App extends Component {
     };
 	
    signInHandler = (event) => {
+	   event.preventDefault();
 	  auth.signInWithEmailAndPassword(this.state.username, this.state.password).catch(error => {
       console.log("Error signing in with password and email", error);
-	  });
+	  this.setState({error: error});
+	  }); 
+
    }
    
    signOutHandler = (event) => {
@@ -52,12 +56,15 @@ class App extends Component {
 	if (this.state.user===null){   
 		return (
 		<div>
+		    <form onSubmit={this.signInHandler}>
 			 <div>Username</div>
-			   <input type="email"  onChange = {(event) => this.onChangeHandlerUsername(event)}></input>
+			   <div><input required type="email" onChange = {(event) => this.onChangeHandlerUsername(event)}></input></div>
 			 <div>Password</div>
-			   <input type="password"  onChange = {(event) => this.onChangeHandlerPassword(event)}></input>
-			 <div className="button" onClick = {(event) => {this.signInHandler(event)}}>Sign in </div>
-			 
+			   <input type="password" required onChange = {(event) => this.onChangeHandlerPassword(event)}></input>
+			 <div> 
+			    <input type="submit" value="Sign in"/>
+		     </div>		
+			 </form>
 			 
 			 
 
