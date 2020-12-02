@@ -4,25 +4,83 @@ import "./App.css";
 
 export const UserContext = createContext({ user: null });
 
+
+  	 
 class App extends Component {
 	
-   state = {
-	 user: null,
+ constructor(props) {
+    super(props);
+    this.onDataChange = this.onDataChange.bind(this);
+
+    this.state = {
+     user: null,
      username: null,
 	 password: null,
 	 error: null,
 	 newprayer: null,
 	 prayerlist: []
-   };
+    };
+
+    this.unsubscribe = undefined;
+  }
+
    componentDidMount = () => {
-   
+
 	 auth.onAuthStateChanged(userAuth => {
 		if (userAuth!=null){
       	  console.log(userAuth.uid);
 		  this.setState({user: userAuth});	
-		  
-		  db.collection("rooms").doc("prayer").collection("private").doc(this.state.user.uid).collection("messages")
+          this.unsubscribe = db.collection("rooms").doc("prayer").collection("private").doc(this.state.user.uid).collection("messages").orderBy("date", "desc").limit(3)
+		  .onSnapshot(this.onDataChange);
+			
+	
+		}		  
+     });
+
+   };
+
+   componentWillUnmount() {
+     this.unsubscribe();
+   }
+   
+   onDataChange(snapshot){
+	   let items = this.state.prayerlist;
+	   snapshot.docChanges().forEach(function(change) {
+					if (change.type === "added") {
+						console.log("New prayer: ", change.doc.data());	
+						items.unshift(change.doc.data());
+						
+					}
+					if (change.type === "modified") {
+						console.log("Modified prayer: ", change.doc.data());
+					}
+					if (change.type === "removed") {
+						console.log("Removed prayer: ", change.doc.data());
+					}
+				});
+	    this.setState({prayerlist: items});
+   }
+ /*  db.collection("rooms").doc("prayer").collection("private").doc(this.state.user.uid).collection("messages").orderBy("date", "desc").limit(3)
 		  .onSnapshot(function(snapshot) {
+			    var list = []
+				snapshot.docChanges().forEach(function(change) {
+					if (change.type === "added") {
+						console.log("New prayer: ", change.doc.data());
+						list.push(change.doc.data());
+					}
+					if (change.type === "modified") {
+						console.log("Modified prayer: ", change.doc.data());
+					}
+					if (change.type === "removed") {
+						console.log("Removed prayer: ", change.doc.data());
+					}
+				});
+			}); */
+   viewPrayer (userId) {
+ 
+		 db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").orderBy("date", "desc").limit(3)
+		  .onSnapshot(function(snapshot) {
+	
 				snapshot.docChanges().forEach(function(change) {
 					if (change.type === "added") {
 						console.log("New prayer: ", change.doc.data());
@@ -34,14 +92,14 @@ class App extends Component {
 						console.log("Removed prayer: ", change.doc.data());
 					}
 				});
+
+
 			});
-	
-		}		  
-     });
 
 
-   };
-  
+
+   }
+   
    onChangeHandlerUsername = (event) => {
           //console.log(event.currentTarget.innerHTML);
 		  var username = event.currentTarget.value;
@@ -84,7 +142,7 @@ class App extends Component {
 		var dateNow = Date.now();
 		console.log("useruid: " + this.state.user.uid);
 		var userId = this.state.user.uid;
-		var prayerlist = this.state.prayerlist;
+		//var prayerlist = this.state.prayerlist;
 	     var docRef = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages");
 	    docRef.add({
               author: this.state.user.email,
@@ -97,8 +155,8 @@ class App extends Component {
 			.then(function(doc) {
 				//alert("Document written with ID: " + doc.id);
 						  console.log(docRef, message, "private", dateNow, userId, doc.id, false);
-						  var item = {"docRef": docRef, "message": message, "messageType": "private", "date": dateNow, "id": doc.id, "recurring": false};
-						  prayerlist.push(item);
+						//  var item = {"docRef": docRef, "message": message, "messageType": "private", "date": dateNow, "id": doc.id, "recurring": false};
+						//  prayerlist.push(item);
 					      
 
 			})
@@ -115,6 +173,7 @@ class App extends Component {
 	}
 	
    render() {
+
 	if (this.state.user===null){   
 		return (
 		<div>
@@ -133,6 +192,8 @@ class App extends Component {
 		 </div>
 		);
 	}else{
+        const { prayerlist} = this.state;
+
 		return (
 		<div>
 		     <div className="button" onClick = {(event) => {this.signOutHandler(event)}}>Sign out </div>
@@ -144,9 +205,19 @@ class App extends Component {
 				   <button  onClick = {(event) => {this.addPrayer(event)}}>
 						Send
 				   </button>
+				   <button  onClick = {(event) => {this.viewPrayer(this.state.user.uid)}}>
+						View prayers
+				   </button>
 			 </div>
 			 <div>
-			    
+			     <ul className="list-group">
+					{prayerlist &&
+					  prayerlist.map((prayer, index) => (
+						<li>
+						  {prayer.message}
+						</li>
+					  ))}
+				  </ul>
 			 </div>
 		</div>
 		);
