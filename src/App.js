@@ -1,30 +1,23 @@
-import React, { Component, createContext, } from "react";
-import {auth, db} from "./firebase";
+import React, { Component } from "react";
+import {auth} from "./firebase";
 import "./App.css";
 import Fasting from "./Components/Fasting";
 import Prayer from "./Components/Prayer";
 
-export const UserContext = createContext({ user: null });
-
-
-  	 
+	 
 class App extends Component {
 	
  constructor(props) {
     super(props);
-    this.onDataChange = this.onDataChange.bind(this);
 
     this.state = {
      user: null,
      username: null,
 	 password: null,
 	 error: null,
-	 newprayer: null,
-	 prayerlist: [],
 	 view: "prayer"
     };
 
-    this.unsubscribe = undefined;
   }
 
    componentDidMount = () => {
@@ -33,39 +26,11 @@ class App extends Component {
 		if (userAuth!=null){
       	  console.log(userAuth.uid);
 		  this.setState({user: userAuth});	
-          this.unsubscribe = db.collection("rooms").doc("prayer").collection("private").doc(this.state.user.uid).collection("messages").orderBy("date", "desc").limit(3)
-		  .onSnapshot(this.onDataChange);
-		  
-			
-	
 		}		  
      });
 
    };
 
-   componentWillUnmount() {
-     this.unsubscribe();
-   }
-   
-   onDataChange(snapshot){
-	   let items = this.state.prayerlist;
-	   snapshot.docChanges().forEach(function(change) {
-					if (change.type === "added") {
-						console.log("New prayer: ", change.doc.data());	
-						items.unshift(change.doc.data());
-						
-					}
-					if (change.type === "modified") {
-						console.log("Modified prayer: ", change.doc.data());
-					}
-					if (change.type === "removed") {
-						console.log("Removed prayer: ", change.doc.data());
-					}
-				});
-	    this.setState({prayerlist: items});
-   }
- 
-   
    onChangeHandlerUsername = (event) => {
           //console.log(event.currentTarget.innerHTML);
 		  var username = event.currentTarget.value;
@@ -103,47 +68,8 @@ class App extends Component {
 	  window.location.reload(false);
    }
 
-    newPrayerHandler = (event) => {
-          //console.log(event.currentTarget.innerHTML);
-		  var prayer = "Dear heavenly Father, " +  event.currentTarget.innerHTML + ", in Jesus' name, Amen";
-		  this.setState({newprayer: prayer});
-    };
-	
-	addPrayer = (event) => {
-		console.log("add: " + this.state.newprayer);
-		var message = this.state.newprayer;
-		var dateNow = Date.now();
-		console.log("useruid: " + this.state.user.uid);
-		var userId = this.state.user.uid;
-		//var prayerlist = this.state.prayerlist;
-	     var docRef = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages");
-	    docRef.add({
-              author: this.state.user.email,
-			  userId: userId,
-			  message: message,
-			  date: dateNow,
-			  recurring: false
 
-			}) 
-			.then(function(doc) {
-				//alert("Document written with ID: " + doc.id);
-						  console.log(docRef, message, "private", dateNow, userId, doc.id, false);
-						//  var item = {"docRef": docRef, "message": message, "messageType": "private", "date": dateNow, "id": doc.id, "recurring": false};
-						//  prayerlist.push(item);
-					      
 
-			})
-			.catch(function(error) {
-				console.error("Error adding document: ", error);
-										  //alert("error");
-
-			});
-		//this.setState({prayerlist: prayerlist});
-
-	    //console.log(this.state.prayerlist.length);
-
-		 
-	}
 	renderSwitch = (param) =>{
 	  switch(param) {
 		case 'fasting':
