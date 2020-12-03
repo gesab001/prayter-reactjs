@@ -1,6 +1,8 @@
 import React, { Component, createContext, } from "react";
 import {auth, db} from "./firebase";
 import "./App.css";
+import Fasting from "./Components/Fasting";
+import Prayer from "./Components/Prayer";
 
 export const UserContext = createContext({ user: null });
 
@@ -18,7 +20,8 @@ class App extends Component {
 	 password: null,
 	 error: null,
 	 newprayer: null,
-	 prayerlist: []
+	 prayerlist: [],
+	 view: "prayer"
     };
 
     this.unsubscribe = undefined;
@@ -32,6 +35,7 @@ class App extends Component {
 		  this.setState({user: userAuth});	
           this.unsubscribe = db.collection("rooms").doc("prayer").collection("private").doc(this.state.user.uid).collection("messages").orderBy("date", "desc").limit(3)
 		  .onSnapshot(this.onDataChange);
+		  
 			
 	
 		}		  
@@ -60,45 +64,7 @@ class App extends Component {
 				});
 	    this.setState({prayerlist: items});
    }
- /*  db.collection("rooms").doc("prayer").collection("private").doc(this.state.user.uid).collection("messages").orderBy("date", "desc").limit(3)
-		  .onSnapshot(function(snapshot) {
-			    var list = []
-				snapshot.docChanges().forEach(function(change) {
-					if (change.type === "added") {
-						console.log("New prayer: ", change.doc.data());
-						list.push(change.doc.data());
-					}
-					if (change.type === "modified") {
-						console.log("Modified prayer: ", change.doc.data());
-					}
-					if (change.type === "removed") {
-						console.log("Removed prayer: ", change.doc.data());
-					}
-				});
-			}); */
-   viewPrayer (userId) {
  
-		 db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").orderBy("date", "desc").limit(3)
-		  .onSnapshot(function(snapshot) {
-	
-				snapshot.docChanges().forEach(function(change) {
-					if (change.type === "added") {
-						console.log("New prayer: ", change.doc.data());
-					}
-					if (change.type === "modified") {
-						console.log("Modified prayer: ", change.doc.data());
-					}
-					if (change.type === "removed") {
-						console.log("Removed prayer: ", change.doc.data());
-					}
-				});
-
-
-			});
-
-
-
-   }
    
    onChangeHandlerUsername = (event) => {
           //console.log(event.currentTarget.innerHTML);
@@ -121,6 +87,13 @@ class App extends Component {
       console.log("Error signing in with password and email", error);
 	  this.setState({error: error});
 	  }); 
+
+   }
+   
+   onViewChange = (event) => {
+	   event.preventDefault();
+	   this.setState({view: event.currentTarget.value});
+	   
 
    }
    
@@ -171,7 +144,14 @@ class App extends Component {
 
 		 
 	}
-	
+	renderSwitch = (param) =>{
+	  switch(param) {
+		case 'fasting':
+		  return <Fasting />;
+		default:
+		  return <Prayer />;
+	  }
+    }
    render() {
 
 	if (this.state.user===null){   
@@ -192,33 +172,25 @@ class App extends Component {
 		 </div>
 		);
 	}else{
-        const { prayerlist} = this.state;
-
+        const { prayerlist, view} = this.state;
+		
 		return (
 		<div>
 		     <div className="button" onClick = {(event) => {this.signOutHandler(event)}}>Sign out </div>
-			 <div>
-			       <h1>New prayer</h1>
-				   <div>Dear heavenly Father, </div>
-				   <div contentEditable onInput = {(event) => this.newPrayerHandler(event)}></div>
-				   <div>in Jesus' name, Amen.</div>
-				   <button  onClick = {(event) => {this.addPrayer(event)}}>
-						Send
-				   </button>
-				   <button  onClick = {(event) => {this.viewPrayer(this.state.user.uid)}}>
-						View prayers
-				   </button>
-			 </div>
-			 <div>
-			     <ul className="list-group">
-					{prayerlist &&
-					  prayerlist.map((prayer, index) => (
-						<li>
-						  {prayer.message}
-						</li>
-					  ))}
-				  </ul>
-			 </div>
+			 <div> 
+			   <label>
+			      Prayer
+			      <input type="radio" id="prayer" name="view" value="prayer" onChange = {(event) => this.onViewChange(event)}/>
+			   </label>	  
+			   <label>
+			      Fasting
+			      <input type="radio" id="fasting" name="view" value="fasting" onChange = {(event) => this.onViewChange(event)}/>
+			   </label>	 
+			 </div>	   
+
+			 {this.renderSwitch(view)}
+			
+			 
 		</div>
 		);
 	}
