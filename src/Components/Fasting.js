@@ -90,9 +90,8 @@ class Fasting extends Component {
 					  fastlist.map((prayer, index) => (
 						<li>
 						   <div>
-						       <h3>Start: {this.getDate(prayer.date)}</h3>
+						       <h3>Start: {this.getDate(prayer.date)} End: {this.getEndDate(prayer.date)}</h3>
 						       <p>{prayer.message}</p>
-							   <h3>End: {this.getEndDate(prayer.date)}</h3>
 						   </div>
 						</li>
 					  ))}
