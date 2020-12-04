@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {auth, db} from "../firebase";
+import {auth, db, addToFirestore} from "../firebase";
 
 class Prayer extends Component {
 
@@ -44,41 +44,20 @@ class Prayer extends Component {
    
     newprayerHandler = (event) => {
           //console.log(event.currentTarget.innerHTML);
-		  var prayer = "Dear heavenly Father, help me to fast from " +  event.currentTarget.innerHTML + " for two months, in Jesus' name, Amen";
+		  var prayer = "Dear heavenly Father,  " +  event.currentTarget.innerHTML + " in Jesus' name, Amen";
 		  this.setState({newprayer: prayer});
     };
 	
 	addPrayer = (event) => {
 		console.log("add: " + this.state.newprayer);
+		var room = "prayer";
+		var author = auth.currentUser.email;
+		var userId = auth.currentUser.uid;
 		var message = this.state.newprayer;
 		var dateNow = Date.now();
-		var userId = auth.currentUser.uid;
-		//var prayerlist = this.state.prayerlist;
-	     var docRef = db.collection("rooms").doc("fasting").collection("private").doc(userId).collection("messages");
-	    docRef.add({
-              author: auth.currentUser.email,
-			  userId: userId,
-			  message: message,
-			  date: dateNow,
-			  recurring: false
-
-			}) 
-			.then(function(doc) {
-				//alert("Document written with ID: " + doc.id);
-						  console.log(docRef, message, "private", dateNow, userId, doc.id, false);
-						//  var item = {"docRef": docRef, "message": message, "messageType": "private", "date": dateNow, "id": doc.id, "recurring": false};
-						//  prayerlist.push(item);
-					      
-
-			})
-			.catch(function(error) {
-				console.error("Error adding document: ", error);
-										  //alert("error");
-
-			});
-		//this.setState({prayerlist: prayerlist});
-
-	    //console.log(this.state.prayerlist.length);
+		var recurring = false;
+		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
+		addToFirestore(room, item);
 
 		 
 	}

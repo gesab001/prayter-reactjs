@@ -17,3 +17,29 @@ import "firebase/firestore";
 firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const db = firebase.firestore();
+
+export const addToFirestore = (room, item) => {
+	console.log("add: " + room);
+	var docRef = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("messages");
+	    docRef.add({
+              author: item.author,
+			  userId: item.userId,
+			  message: item.message,
+			  date: item.date,
+			  recurring: item.recurring
+
+			}) 
+			.then(function(doc) {
+				//alert("Document written with ID: " + doc.id);
+						  console.log(docRef, item.message, "private", item.date, item.userId, doc.id, item.recurring);
+						//  var item = {"docRef": docRef, "message": message, "messageType": "private", "date": dateNow, "id": doc.id, "recurring": false};
+						//  prayerlist.push(item);
+					      
+
+			})
+			.catch(function(error) {
+				console.error("Error adding document: ", error);
+										  //alert("error");
+
+			});
+}
