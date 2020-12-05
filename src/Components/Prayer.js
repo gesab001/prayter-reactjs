@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {auth, db, addToFirestore} from "../firebase";
+import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
 
 class Prayer extends Component {
 
@@ -27,9 +27,11 @@ class Prayer extends Component {
    onDataChange(snapshot){
 	   let items = this.state.prayerlist;
 	   snapshot.docChanges().forEach(function(change) {
+					var item = {"id": change.doc.id, "item": change.doc.data()};
+
 					if (change.type === "added") {
 						console.log("New prayer: ", change.doc.data());	
-						items.unshift(change.doc.data());
+						items.unshift(item);
 						
 					}
 					if (change.type === "modified") {
@@ -37,6 +39,10 @@ class Prayer extends Component {
 					}
 					if (change.type === "removed") {
 						console.log("Removed prayer: ", change.doc.data());
+						var filtered = items.filter(function(value, index, arr){
+						    return value.id!=item.id;
+						});
+						items = filtered;
 					}
 				});
 	    this.setState({prayerlist: items});
@@ -62,6 +68,14 @@ class Prayer extends Component {
 		 
 	}
   
+  	deletePrayer = (event, id) => {
+		console.log("remove: " + id);
+		var room = "prayer";
+		var userId = auth.currentUser.uid;
+		deleteFromFirestore(room, userId, id);
+
+		 
+	}
   render() {
 	 const {prayerlist} = this.state;
 	 return (
@@ -81,7 +95,12 @@ class Prayer extends Component {
 					{prayerlist &&
 					  prayerlist.map((prayer, index) => (
 						<li>
-						  {prayer.message}
+						  <div>
+						  <p>{prayer.item.message}</p>
+						   <button  onClick = {(event) => {this.deletePrayer(event, prayer.id)}}>
+									Delete
+							   </button>
+						  </div>
 						</li>
 					  ))}
 				  </ul>

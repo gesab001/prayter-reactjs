@@ -43,3 +43,12 @@ export const addToFirestore = (room, item) => {
 
 			});
 }
+
+export const deleteFromFirestore = (room, userId, id) => {
+	var docRef = db.collection("rooms").doc(room).collection("private").doc(userId).collection("messages");
+    docRef.doc(id).delete().then(function() {
+		console.log("Document successfully deleted!");
+	}).catch(function(error) {
+		console.error("Error removing document: ", error);
+	});
+}

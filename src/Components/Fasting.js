@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {auth, db, addToFirestore} from "../firebase";
+import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
 
 class Fasting extends Component {
 
@@ -9,7 +9,8 @@ class Fasting extends Component {
 
     this.state = {
 	  newfast: null,
-	  fastlist: []
+	  fastlist: [], 
+	  inputField: null
     };
 
     this.unsubscribe = undefined;
@@ -27,9 +28,10 @@ class Fasting extends Component {
    onDataChange(snapshot){
 	   let items = this.state.fastlist;
 	   snapshot.docChanges().forEach(function(change) {
+		   			var item = {"id": change.doc.id, "item": change.doc.data()};
 					if (change.type === "added") {
-						console.log("New prayer: ", change.doc.data());	
-						items.unshift(change.doc.data());
+						console.log("New prayer: ", change.doc.id);	
+						items.unshift(item);
 						
 					}
 					if (change.type === "modified") {
@@ -37,6 +39,10 @@ class Fasting extends Component {
 					}
 					if (change.type === "removed") {
 						console.log("Removed prayer: ", change.doc.data());
+						var filtered = items.filter(function(value, index, arr){
+						    return value.id!=item.id;
+						});
+						items = filtered;
 					}
 				});
 	    this.setState({fastlist: items});
@@ -58,6 +64,15 @@ class Fasting extends Component {
 		var recurring = false;
 		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
 		addToFirestore(room, item);
+
+		 
+	}
+	
+	deleteFast = (event, id) => {
+		console.log("remove: " + id);
+		var room = "fasting";
+		var userId = auth.currentUser.uid;
+		deleteFromFirestore(room, userId, id);
 
 		 
 	}
@@ -90,8 +105,11 @@ class Fasting extends Component {
 					  fastlist.map((prayer, index) => (
 						<li>
 						   <div>
-						       <h3>Start: {this.getDate(prayer.date)} End: {this.getEndDate(prayer.date)}</h3>
-						       <p>{prayer.message}</p>
+						       <h3>Start: {this.getDate(prayer.item.date)} End: {this.getEndDate(prayer.item.date)}</h3>
+						       <p>{prayer.item.message}</p>
+							   <button  onClick = {(event) => {this.deleteFast(event, prayer.id)}}>
+									Delete
+							   </button>
 						   </div>
 						</li>
 					  ))}
