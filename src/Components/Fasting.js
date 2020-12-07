@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
+import {Link} from "react-router-dom";
 
 class Fasting extends Component {
 
@@ -90,6 +91,7 @@ class Fasting extends Component {
 	 return (
 	    <div>
 		   <div>
+		           <Link to="/home">Cancel</Link>
 			       <h1>New fast</h1>
 				   <div>Dear heavenly Father, help me to fast from  </div>
 				   <div contentEditable onInput = {(event) => this.newFastHandler(event)}></div>
@@ -99,22 +101,7 @@ class Fasting extends Component {
 				   </button>
 
 			 </div>
-			 <div>
-			     <ul>
-					{fastlist &&
-					  fastlist.map((prayer, index) => (
-						<li>
-						   <div>
-						       <h3>Start: {this.getDate(prayer.item.date)} End: {this.getEndDate(prayer.item.date)}</h3>
-						       <p>{prayer.item.message}</p>
-							   <button  onClick = {(event) => {this.deleteFast(event, prayer.id)}}>
-									Delete
-							   </button>
-						   </div>
-						</li>
-					  ))}
-				  </ul>
-			 </div>
+
 		  
 		</div>
 	 )
