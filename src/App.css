@@ -25,6 +25,9 @@
 	flex-direction: row;
 	justify-content: flex-end;
     padding-right:18px;
+	position: fixed;
+	bottom: 0;
+	width:100%;
 	
 	
 }
