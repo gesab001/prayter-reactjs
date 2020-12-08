@@ -6,26 +6,34 @@ class Prayer extends Component {
  constructor(props) {
     super(props);
     this.onDataChange = this.onDataChange.bind(this);
+    this.onDataChange2 = this.onDataChange2.bind(this);
 
     this.state = {
 	  newprayer: null,
-	  prayerlist: []
+	  list: [],
+	  list2: []
     };
 
     this.unsubscribe = undefined;
+	this.unsubscribe2 = undefined;
+
   }
 
    componentDidMount = () => {
           this.unsubscribe = db.collection("rooms").doc("prayer").collection("private").doc(auth.currentUser.uid).collection("messages").orderBy("date", "desc").limit(3)
 		  .onSnapshot(this.onDataChange);
+          this.unsubscribe2 = db.collection("rooms").doc("fasting").collection("private").doc(auth.currentUser.uid).collection("messages").orderBy("date", "desc").limit(3)
+		  .onSnapshot(this.onDataChange2);
    };
 
    componentWillUnmount() {
      this.unsubscribe();
+     this.unsubscribe2();
+
    }
    
    onDataChange(snapshot){
-	   let items = this.state.prayerlist;
+	   let items = this.state.list;
 	   snapshot.docChanges().forEach(function(change) {
 					var item = {"id": change.doc.id, "item": change.doc.data()};
 
@@ -45,59 +53,63 @@ class Prayer extends Component {
 						items = filtered;
 					}
 				});
-	    this.setState({prayerlist: items});
+	    this.setState({list: items});
    }
    
-    newprayerHandler = (event) => {
-          //console.log(event.currentTarget.innerHTML);
-		  var prayer = "Dear heavenly Father,  " +  event.currentTarget.innerHTML + " in Jesus' name, Amen";
-		  this.setState({newprayer: prayer});
-    };
-	
-	addPrayer = (event) => {
-		console.log("add: " + this.state.newprayer);
-		var room = "prayer";
-		var author = auth.currentUser.email;
-		var userId = auth.currentUser.uid;
-		var message = this.state.newprayer;
-		var dateNow = Date.now();
-		var recurring = false;
-		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
-		addToFirestore(room, item);
+   onDataChange2(snapshot){
+	   let items = this.state.list2;
+	   snapshot.docChanges().forEach(function(change) {
+					var item = {"id": change.doc.id, "item": change.doc.data()};
 
-		 
-	}
+					if (change.type === "added") {
+						console.log("New prayer: ", change.doc.data());	
+						items.unshift(item);
+						
+					}
+					if (change.type === "modified") {
+						console.log("Modified prayer: ", change.doc.data());
+					}
+					if (change.type === "removed") {
+						console.log("Removed prayer: ", change.doc.data());
+						var filtered = items.filter(function(value, index, arr){
+						    return value.id!=item.id;
+						});
+						items = filtered;
+					}
+				});
+	    this.setState({list2: items});
+   }
+
   
-  	deletePrayer = (event, id) => {
+  	deleteItem = (event, room, id) => {
 		console.log("remove: " + id);
-		var room = "prayer";
 		var userId = auth.currentUser.uid;
 		deleteFromFirestore(room, userId, id);
 
 		 
 	}
+	getStartDate = (timestamp) => {
+		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
+	}
+ 
+	getEndDate = (timestamp) => {
+		var timestamp = timestamp + (60*24*60*60*1000);
+		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
+	} 
   render() {
-	 const {prayerlist} = this.state;
+	 const {list, list2} = this.state;
 	 return (
 	    <div>
-		   <div>
-			       <h1>New prayer</h1>
-				   <div>Dear heavenly Father, </div>
-				   <div contentEditable onInput = {(event) => this.newprayerHandler(event)}></div>
-				   <div>in Jesus' name, Amen.</div>
-				   <button  onClick = {(event) => {this.addPrayer(event)}}>
-						Send
-				   </button>
-
-			 </div>
+             <h1>Prayer</h1>
 			 <div>
 			     <ul>
-					{prayerlist &&
-					  prayerlist.map((prayer, index) => (
+					{list &&
+					  list.map((item, index) => (
 						<li>
 						  <div>
-						  <p>{prayer.item.message}</p>
-						   <button  onClick = {(event) => {this.deletePrayer(event, prayer.id)}}>
+						  <p>Submitted: {this.getStartDate(item.item.date)}</p>
+						  <p>{item.item.message}</p>
+						   <button  onClick = {(event) => {this.deleteItem(event, "prayer", item.id)}}>
 									Delete
 							   </button>
 						  </div>
@@ -105,7 +117,24 @@ class Prayer extends Component {
 					  ))}
 				  </ul>
 			 </div>
-		  
+             <h1>Fasting</h1>
+			 <div>
+			     <ul>
+					{list2 &&
+					  list2.map((item, index) => (
+						<li>
+						  <div>
+						  <p>From: {this.getStartDate(item.item.date)}</p>
+						  <p>To: {this.getEndDate(item.item.date)}</p>
+						  <p>{item.item.message}</p>
+						   <button  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
+									Delete
+							   </button>
+						  </div>
+						</li>
+					  ))}
+				  </ul>
+			 </div>		  
 		</div>
 	 )
   }

@@ -4,6 +4,7 @@ import "./App.css";
 import Fasting from "./Components/Fasting";
 import Prayer from "./Components/Prayer";
 import Home from "./Components/Home";
+import Compose from "./Components/Compose";
 
 import {
 	  BrowserRouter as Router,
@@ -114,7 +115,7 @@ class App extends Component {
 		  <Switch>
 		     <Route exact path="/"> <Redirect to="/home" /> </Route>
 		  	 <Route exact path="/home"> <Home /> </Route>
-			 <Route exact path="/compose/tweet"> <Fasting /> </Route>
+			 <Route exact path="/compose/tweet"> <Compose /> </Route>
 		  </Switch>
 		</Router>
 		);

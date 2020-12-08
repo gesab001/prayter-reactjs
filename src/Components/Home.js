@@ -1,5 +1,7 @@
 import React, { Component} from "react";
 import {auth, db} from "../firebase";
+import Fasting from "./Fasting";
+import Prayer from "./Prayer";
 
 import {
 	  BrowserRouter as Router,
@@ -17,7 +19,8 @@ class Home extends Component {
     this.state = {
 	  newfast: null,
 	  fastlist: [], 
-	  inputField: null
+	  inputField: null,
+	  view: "prayer"
     };
 
     this.unsubscribe = undefined;
@@ -69,14 +72,34 @@ class Home extends Component {
 	  window.location.reload(false);
   }
   
+     onViewChange = (event) => {
+	   event.preventDefault();
+	   this.setState({view: event.currentTarget.value});
+	   
+
+   }
+   
+/*    	renderSwitch = (param) =>{
+	  switch(param) {
+		case 'fasting':
+		  return <Fasting />;
+		default:
+		  return <Prayer room={param}/>;
+	  }
+    } */
+	
+   renderSwitch = (param) =>{
+	  return <Prayer room={param}/>;
+   }
+	
   render(){	
-  	 const {fastlist} = this.state;
+  	 const {fastlist, view} = this.state;
 
 	  return (
 		   <div>
 			     <div className="button" onClick = {(event) => {this.signOutHandler(event)}}>Sign out </div>
 
-             <h3>My prayers</h3>
+					 {/*              <h3>My prayers</h3>
 			 <div> 
 			   <label>
 			      Prayer
@@ -86,23 +109,9 @@ class Home extends Component {
 			      Fasting
 			      <input type="radio" id="fasting" name="view" value="fasting" onChange = {(event) => this.onViewChange(event)}/>
 			   </label>	 
-			 </div>	   
-			 <div>
-			     <ul>
-					{fastlist &&
-					  fastlist.map((prayer, index) => (
-						<li>
-						   <div>
-						       <h3>Start: {this.getDate(prayer.item.date)} End: {this.getEndDate(prayer.item.date)}</h3>
-						       <p>{prayer.item.message}</p>
-							   <button  onClick = {(event) => {this.deleteFast(event, prayer.id)}}>
-									Delete
-							   </button>
-						   </div>
-						</li>
-					  ))}
-				  </ul>
-			 </div>
+  </div> */}
+			 {this.renderSwitch(view)}			 
+			
 			<div class="floating-button-container"> 
 				<Link to="/compose/tweet">
 					<div class="floating-button">
