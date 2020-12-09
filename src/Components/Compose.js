@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
 import {Link} from "react-router-dom";
 
@@ -12,6 +12,8 @@ class Compose extends Component {
 	  fastlist: [], 
 	  inputField: null
     };
+	
+	//this.inputField = React.createRef();
 
   }
 
@@ -19,6 +21,8 @@ class Compose extends Component {
           //console.log(event.currentTarget.innerHTML);
 		  var fast = "Dear heavenly Father, help me to fast from " +  event.currentTarget.innerHTML + " for 60 days, in Jesus' name, Amen";
 		  this.setState({newfast: fast});
+		  this.setState({inputField: event.currentTarget});
+
     };
 	
 	addFast = (event) => {
@@ -31,6 +35,8 @@ class Compose extends Component {
 		var recurring = false;
 		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
 		addToFirestore(room, item);
+		this.state.inputField.innerHTML = "";
+
 
 		 
 	}
@@ -39,6 +45,8 @@ class Compose extends Component {
           //console.log(event.currentTarget.innerHTML);
 		  var prayer = "Dear heavenly Father,  " +  event.currentTarget.innerHTML + " in Jesus' name, Amen";
 		  this.setState({message: prayer});
+		  this.setState({inputField: event.currentTarget});
+		  
     };
 	
 	addPrayer = (event) => {
@@ -51,32 +59,19 @@ class Compose extends Component {
 		var recurring = false;
 		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
 		addToFirestore(room, item);
+		this.state.inputField.innerHTML = "";
 
 		 
 	}
 	
-	deleteFast = (event, id) => {
-		console.log("remove: " + id);
-		var room = "fasting";
-		var userId = auth.currentUser.uid;
-		deleteFromFirestore(room, userId, id);
 
-		 
-	}
 	
-	getDate = (timestamp) => {
-		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
-	}
- 
-	getEndDate = (timestamp) => {
-		var timestamp = timestamp + (60*24*60*60*1000);
-		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
-	} 
+
   render() {
 	 const {fastlist} = this.state;
 	 return (
 	    <div>
-				           <Link to="/home">Cancel</Link>
+				           <Link to="/home">Back</Link>
 			<div> 
 			   <label>
 			      Prayer
@@ -102,7 +97,7 @@ class Compose extends Component {
 			 		   <div>
 			       <h1>New prayer</h1>
 				   <div>Dear heavenly Father, </div>
-				   <div contentEditable onInput = {(event) => this.newprayerHandler(event)}></div>
+				   <div ref={this.inputField} contentEditable onInput = {(event) => this.newprayerHandler(event)}></div>
 				   <div>in Jesus' name, Amen.</div>
 				   <button  onClick = {(event) => {this.addPrayer(event)}}>
 						Send
