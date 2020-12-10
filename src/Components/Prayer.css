@@ -1,0 +1,8 @@
+.message-container {
+	display: none;
+}
+
+.delete-button {
+	position: relative;
+	z-index: 1;
+}

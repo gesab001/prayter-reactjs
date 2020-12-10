@@ -29,7 +29,7 @@
 	bottom: 0;
 	width:100%;
 	z-index: 0;
-	background-color: yellow;
+	
 	
 	
 }
@@ -58,3 +58,11 @@
 	
 }
 
+.message-container {
+	display: none;
+}
+
+.delete-button {
+	position: relative;
+	z-index: 1;
+}

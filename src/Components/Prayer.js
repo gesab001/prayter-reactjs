@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
+import "./Prayer.css";
 
 class Prayer extends Component {
 
@@ -98,8 +99,9 @@ class Prayer extends Component {
 	} 
   render() {
 	 const {list, list2} = this.state;
+	 const mystyle = {position: "relative", zIndex: "1"};
 	 return (
-	    <div>
+	    <div >
              <h1>Prayer</h1>
 			 <div>
 			     <ul>
@@ -118,16 +120,16 @@ class Prayer extends Component {
 				  </ul>
 			 </div>
              <h1>Fasting</h1>
-			 <div>
+			 <div >
 			     <ul>
 					{list2 &&
 					  list2.map((item, index) => (
 						<li>
-						  <div>
+						  <div >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date)}</p>
 						  <p>{item.item.message}</p>
-						   <button  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
+						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete
 							   </button>
 						  </div>
