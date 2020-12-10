@@ -83,9 +83,15 @@ class Prayer extends Component {
 
   
   	deleteItem = (event, room, id) => {
-		console.log("remove: " + id);
-		var userId = auth.currentUser.uid;
-		deleteFromFirestore(room, userId, id);
+		var userconfirm = prompt("type: cancel this item");
+		if (userconfirm=="cancel this item"){
+			console.log("remove: " + id);
+			var userId = auth.currentUser.uid;
+			deleteFromFirestore(room, userId, id);
+			alert("item deleted");
+		}else{
+			alert("item not deleted");
+		}
 
 		 
 	}
