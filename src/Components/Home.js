@@ -126,7 +126,7 @@ class Home extends Component {
 						</Link>				
 					</div>	
 					
-					<div class="nav-menu">
+					<nav class="nav-menu">
 						<div class="nav-button">
 						   <svg class="svg-nav-button"  viewBox="0 0 24 24" >
 							 <g>
@@ -162,7 +162,7 @@ class Home extends Component {
 							 </g>
 						   </svg>
 						</div>
-					</div>	
+					</nav>	
 					
 				</div>
 					
