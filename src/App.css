@@ -20,15 +20,56 @@
 	
 } 
 
+.article {
+   border-bottom-color: rgb(235, 238, 240);
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+}
+
+.bottom-menu {
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	z-index: 2;
+}
+
+.nav-menu {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: center;
+   height: 3.5em;
+   background-color: white;
+   border-top-color: rgb(235, 238, 240);
+   border-top-style: solid;
+   border-top-width: 1px;
+ 
+}
+
+
+
+.nav-button {
+  display: flex;	
+}
+
+.svg-nav-button {
+	height: 1.75rem;
+    color: rgba(29,161,242,1.00);	
+	fill: currentcolor;
+}
+
 .floating-button-container {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
     padding-right:18px;
-	position: fixed;
+	position: relative;
 	bottom: 0;
 	width:100%;
 	z-index: 0;
+	
 	
 	
 	

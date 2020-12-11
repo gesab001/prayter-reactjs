@@ -106,6 +106,7 @@ class Prayer extends Component {
   render() {
 	 const {list, list2} = this.state;
 	 const mystyle = {position: "relative", zIndex: "1"};
+	 const emptySpaceStyle = {height: "calc(6.5625rem)"};
 	 return (
 	    <div >
              <h1>Prayer</h1>
@@ -114,7 +115,7 @@ class Prayer extends Component {
 					{list &&
 					  list.map((item, index) => (
 						<li>
-						  <div>
+						  <div class="article">
 						  <p>Submitted: {this.getStartDate(item.item.date)}</p>
 						  <p>{item.item.message}</p>
 						   <button  onClick = {(event) => {this.deleteItem(event, "prayer", item.id)}}>
@@ -131,7 +132,7 @@ class Prayer extends Component {
 					{list2 &&
 					  list2.map((item, index) => (
 						<li>
-						  <div >
+						  <div class="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date)}</p>
 						  <p>{item.item.message}</p>
@@ -139,9 +140,13 @@ class Prayer extends Component {
 									Delete
 							   </button>
 						  </div>
+						 
 						</li>
 					  ))}
 				  </ul>
+				  
+				  <div style={emptySpaceStyle}></div>
+				  
 			 </div>		  
 		</div>
 	 )
