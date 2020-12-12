@@ -58,8 +58,13 @@
 
 .svg-nav-button {
 	height: 1.75rem;
-    color: rgba(29,161,242,1.00);	
+	color: rgb(91, 112, 131);
 	fill: currentcolor;
+}
+
+.svg-nav-button-selected{
+    color: rgba(29,161,242,1.00);	
+
 }
 
 .floating-button-container {
