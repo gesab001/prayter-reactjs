@@ -62,7 +62,12 @@
 	fill: currentcolor;
 }
 
-.svg-nav-button-selected{
+.svg-nav-button:hover{
+    color: rgba(29,161,242,1.00);	
+
+}
+
+.svg-nav-button:active{
     color: rgba(29,161,242,1.00);	
 
 }
