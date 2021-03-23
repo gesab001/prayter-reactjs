@@ -5,6 +5,8 @@ import Fasting from "./Components/Fasting";
 import Prayer from "./Components/Prayer";
 import Home from "./Components/Home";
 import Compose from "./Components/Compose";
+import SignUp from "./Components/SignUp";
+import PasswordReset from "./Components/PasswordReset";
 
 import {
 	  BrowserRouter as Router,
@@ -24,7 +26,9 @@ class App extends Component {
      username: null,
 	 password: null,
 	 error: null,
-	 view: "prayer"
+	 view: "prayer",
+	 signup: false,
+	 forgotpassword: false
     };
 
   }
@@ -87,22 +91,71 @@ class App extends Component {
 		  return <Prayer />;
 	  }
     }
+    
+   signupHandler = () => {
+	   	   console.log(this.state.signup);
+	   this.setState({signup: true}); 
+	   console.log(this.state.signup);
+   } 
+   
+   showSignIn = () => {
+	    this.setState({signup: false}); 
+   }
+   
+   forgotPasswordHandler = () => {
+	    this.setState({forgotpassword: true});  
+   }
+   
+   turnOffPasswordReset = () => {
+	   	    this.setState({forgotpassword: false});  
+
+   } 
+   
    render() {
 
 	if (this.state.user===null){   
 		return (
 		<div>
-		    <form onSubmit={this.signInHandler}>
-			 <div>Username</div>
-			   <div><input required type="email" onChange = {(event) => this.onChangeHandlerUsername(event)}></input></div>
-			 <div>Password</div>
-			   <input type="password" required onChange = {(event) => this.onChangeHandlerPassword(event)}></input>
-			 <div> 
-			    <input type="submit" value="Sign in"/>
-		     </div>		
-			 </form>
-			 
-			 
+   
+				 
+			{this.state.forgotpassword
+				
+				?  
+				<div>forgot password
+								<PasswordReset />
+                    <button onClick = {(event) => {this.turnOffPasswordReset()}}>Back to sign in page
+					  
+					  </button>
+				</div>
+				:
+				
+				   <div>       { this.state.signup
+					  ? 
+					  <div>
+					  <SignUp/>
+					  Already have an account? <button onClick = {(event) => {this.showSignIn()}}>Sign in here
+					  
+					  </button></div>
+					  :
+					  <div>
+					<form onSubmit={this.signInHandler}>
+					 <div>Username</div>
+					   <div><input required type="email" onChange = {(event) => this.onChangeHandlerUsername(event)}></input></div>
+					 <div>Password</div>
+					   <input type="password" required onChange = {(event) => this.onChangeHandlerPassword(event)}></input>
+					 <div> 
+						<input type="submit" value="Sign in"/>
+						
+					 </div>		
+					 </form>
+					 <button onClick = {(event) => {this.signupHandler()}}>Sign up </button>
+					 <button onClick = {(event) => {this.forgotPasswordHandler()}}>Forgot Password</button>
+					
+					 </div>
+					
+					}  
+					</div>
+			}
 
 		 </div>
 		);
@@ -116,6 +169,7 @@ class App extends Component {
 		     <Route exact path="/"> <Redirect to="/home" /> </Route>
 		  	 <Route exact path="/home"> <Home /> </Route>
 			 <Route exact path="/compose/tweet"> <Compose /> </Route>
+		     <Route exact path="/compose/tweet"> <Compose /> </Route>
 		  </Switch>
 		</Router>
 		);

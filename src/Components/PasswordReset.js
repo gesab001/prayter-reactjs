@@ -59,12 +59,7 @@ const PasswordReset = () => {
             Send me a reset link
           </button>
         </form>
-        <Link
-         to ="/"
-          className="my-2 text-blue-700 hover:text-blue-800 text-center block"
-        >
-          &larr; back to sign in page
-        </Link>
+     
       </div>
     </div>
   );

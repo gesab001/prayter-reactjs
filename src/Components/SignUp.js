@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {auth} from "../firebase";
 import {generateUserDocument} from "../firebase";
+import styles from './SignUp.module.css';
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -11,12 +12,13 @@ const SignUp = () => {
   const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
     event.preventDefault();
     try{
+	  console.log(email + password);
       const {user} = await auth.createUserWithEmailAndPassword(email, password);
-      generateUserDocument(user, {displayName});
+      //generateUserDocument(user, {displayName});
     }
     catch(error){
-      setError('Error Signing up with email and password');
-	  console.log(error);
+      setError(error.message);
+	  console.log(error.message);
     }
 
     setEmail("");
@@ -38,7 +40,7 @@ const SignUp = () => {
       <h1 className="text-3xl mb-2 text-center font-bold">Sign Up</h1>
       <div className="border border-blue-400 mx-auto w-11/12 md:w-2/4 rounded py-8 px-4 md:px-8">
         {error !== null && (
-          <div className="py-4 bg-red-600 w-full text-white text-center mb-3">
+          <div className={styles.errorMessage}>
             {error}
           </div>
         )}
@@ -94,12 +96,7 @@ const SignUp = () => {
         >
           Sign In with Google
         </button>
-        <p className="text-center my-3">
-          Already have an account?{" "}
-          <Link to="/" className="text-blue-500 hover:text-blue-600">
-            Sign in here
-          </Link>
-        </p>
+       
       </div>
     </div>
   );
