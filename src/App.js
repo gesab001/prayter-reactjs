@@ -11,6 +11,8 @@ import GoogleLogin from 'react-google-login';
 import firebase from "firebase/app";
 import {googleSignInPopup} from './googleSignin';
 import {githubSignin} from './githubSignin';
+import {yahooSignin} from './yahooSignin';
+
 import {
 	  BrowserRouter as Router,
 	  Switch,
@@ -31,7 +33,10 @@ class App extends Component {
 	 error: null,
 	 view: "prayer",
 	 signup: false,
-	 forgotpassword: false
+	 forgotpassword: false,
+	 phoneNumber: null,
+	 verificationCode: null,
+	 confirmationResult: undefined
     };
 
   }
@@ -70,6 +75,16 @@ class App extends Component {
 	   return provider;
    } 
  
+   yahooProvider = () => {
+       var provider = new firebase.auth.OAuthProvider('yahoo.com');
+	   return provider;  
+   } 
+  
+   signInWithYahoo = () => {
+	   var provider = this.yahooProvider();
+	   yahooSignin(provider);
+   }  
+    
    signInWithGithub = () => {
 	   var provider = this.githubProvider();
 	   githubSignin(provider);
@@ -78,6 +93,18 @@ class App extends Component {
    signInWithGoogle = () => {
 	   var provider = this.googleProvider();
 	   googleSignInPopup(provider);
+   }
+   
+   signInWithPhonenumber = (code) => {
+	   this.state.confirmationResult.confirm(code).then((result) => {
+		  // User signed in successfully.
+		  this.setState({user: result.user});
+		  // ...
+		}).catch((error) => {
+		  // User couldn't sign in (bad verification code?)
+		  // ...
+		  console.log(error);
+		});
    }
    onChangeHandlerUsername = (event) => {
           //console.log(event.currentTarget.innerHTML);
@@ -93,7 +120,32 @@ class App extends Component {
 		  
 		  
     };
-	
+
+   createUserWithPhoneNumberHandler = (event, phoneNumber) => {
+		event.preventDefault();
+		const appVerifier = new firebase.auth.RecaptchaVerifier(event.target, {
+		  'size': 'invisible',
+		  'callback': (response) => {
+			// reCAPTCHA solved, allow signInWithPhoneNumber.
+			console.log(response);
+		  }
+		});
+		firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+			.then((confirmationResult) => {
+			  // SMS sent. Prompt user to type the code from the message, then sign the
+			  // user in with confirmationResult.confirm(code).
+			  var code = window.prompt("code: "); 
+			  confirmationResult.confirm(code);
+
+			  // ...
+			}).catch((error) => {
+			  // Error; SMS not sent
+			  // ...
+         	  this.setState({error: error.message});
+
+			});
+    };
+  	
    signInHandler = (event) => {
 	   event.preventDefault();
 	  auth.signInWithEmailAndPassword(this.state.username, this.state.password).catch(error => {
@@ -146,6 +198,16 @@ class App extends Component {
 
    } 
    
+   onChangeHandler = event => {
+      const { name, value } = event.currentTarget;
+	  if (name==="userPhoneNumber"){
+		  
+		  this.setState({phoneNumber: value});	
+	  } else if (name==="verificationCode"){
+		  this.setState({verificationCode: value});
+	  }
+  };
+  
    render() {
      const responseGoogle = (response) => {
 		  console.log(response);
@@ -185,11 +247,40 @@ class App extends Component {
 						<input type="submit" value="Sign in"/>
 						
 					 </div>	
+					 
+					 <div>
+					   {this.state.error !== null && (
+						  <div >
+							{window.alert(this.state.error)}
+						  </div>
+						)}
+					        <form>
+							  <label htmlFor="userPhoneNumber" className="block">
+								Phone Number:
+							  </label>
+							   <input 
+								  type="number"
+								  value={this.state.phoneNumber}
+								  id="userPhoneNumber"
+								  name="userPhoneNumber"
+								  onChange={event => this.onChangeHandler(event)}
+							   />
+							   <button
+								  onClick={event => {
+								  this.createUserWithPhoneNumberHandler(event, this.state.phoneNumber);
+								}}
+								> Sign in with Phone Number</button>
+							</form>
+					 </div>
+				 					 
 					 <div>
 						<button onClick = {(event) => {this.signInWithGoogle()}}>Sign in with Google</button>
 						<button onClick = {(event) => {this.signInWithGithub()}}>Sign in with Github</button>
+						<button onClick = {(event) => {this.signInWithYahoo()}}>Sign in with Yahoo</button>
 	                 </div> 
 					 </form>
+					 
+					 
 					 <button onClick = {(event) => {this.signupHandler()}}>Sign up </button>
 					 <button onClick = {(event) => {this.forgotPasswordHandler()}}>Forgot Password</button>
 					

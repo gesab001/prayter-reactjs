@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import {auth} from "../firebase";
 import {generateUserDocument} from "../firebase";
 import styles from './SignUp.module.css';
+import firebase from "firebase/app";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+
   const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState(null);
   const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
@@ -25,6 +28,9 @@ const SignUp = () => {
     setPassword("");
     setDisplayName("");
   };
+  
+
+  
   const onChangeHandler = event => {
     const { name, value } = event.currentTarget;
     if (name === "userEmail") {
@@ -33,7 +39,9 @@ const SignUp = () => {
       setPassword(value);
     } else if (name === "displayName") {
       setDisplayName(value);
-    }
+    } else if (name === "userPhoneNumber") {
+	  setPhone(value);	
+	}
   };
   return (
     <div className="mt-8">
@@ -90,13 +98,8 @@ const SignUp = () => {
             Sign up
           </button>
         </form>
-        <p className="text-center my-3">or</p>
-        <button
-          className="bg-red-500 hover:bg-red-600 w-full py-2 text-white"
-        >
-          Sign In with Google
-        </button>
        
+
       </div>
     </div>
   );

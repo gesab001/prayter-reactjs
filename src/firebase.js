@@ -18,6 +18,8 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
+
+    
 export const addToFirestore = (room, item) => {
 	console.log("add: " + room);
 	var docRef = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("messages");
