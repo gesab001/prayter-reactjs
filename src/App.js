@@ -12,6 +12,9 @@ import firebase from "firebase/app";
 import {googleSignInPopup} from './googleSignin';
 import {githubSignin} from './githubSignin';
 import {yahooSignin} from './yahooSignin';
+import {twitterSignInPopup} from './twitterSignin';
+import {microsoftSignInPopup} from './microsoftSignin';
+
 
 import {
 	  BrowserRouter as Router,
@@ -79,7 +82,26 @@ class App extends Component {
        var provider = new firebase.auth.OAuthProvider('yahoo.com');
 	   return provider;  
    } 
-  
+   
+   twitterProvider = () => {
+	   var provider = new firebase.auth.TwitterAuthProvider();
+	   return provider;
+   }
+
+   microsoftProvider = () => {
+		var provider = new firebase.auth.OAuthProvider('microsoft.com');	   
+		return provider;
+   }
+
+   signInWithMicrosoft = () => {
+	   var provider = this.microsoftProvider();
+	   microsoftSignInPopup(provider);
+   }
+       
+   signInWithTwitter = () => {
+	   var provider = this.twitterProvider();
+	   twitterSignInPopup(provider);
+   }   
    signInWithYahoo = () => {
 	   var provider = this.yahooProvider();
 	   yahooSignin(provider);
@@ -277,6 +299,8 @@ class App extends Component {
 						<button onClick = {(event) => {this.signInWithGoogle()}}>Sign in with Google</button>
 						<button onClick = {(event) => {this.signInWithGithub()}}>Sign in with Github</button>
 						<button onClick = {(event) => {this.signInWithYahoo()}}>Sign in with Yahoo</button>
+						<button onClick = {(event) => {this.signInWithTwitter()}}>Sign in with Twitter</button>
+						<button onClick = {(event) => {this.signInWithMicrosoft()}}>Sign in with Microsoft</button>
 	                 </div> 
 					 </form>
 					 
