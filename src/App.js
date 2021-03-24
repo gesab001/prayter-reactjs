@@ -7,7 +7,10 @@ import Home from "./Components/Home";
 import Compose from "./Components/Compose";
 import SignUp from "./Components/SignUp";
 import PasswordReset from "./Components/PasswordReset";
-
+import GoogleLogin from 'react-google-login';
+import firebase from "firebase/app";
+import {googleSignInPopup} from './googleSignin';
+import {githubSignin} from './githubSignin';
 import {
 	  BrowserRouter as Router,
 	  Switch,
@@ -44,6 +47,38 @@ class App extends Component {
 
    };
 
+   googleProvider = () => {
+	  // [START auth_google_provider_create]
+	  var provider = new firebase.auth.GoogleAuthProvider();
+	  // [END auth_google_provider_create]
+
+	  // [START auth_google_provider_scopes]
+	  provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+ 	  provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
+
+	  // [END auth_google_provider_scopes]
+	  
+	  // [START auth_google_provider_params]
+	  provider.setCustomParameters({
+		'login_hint': 'user@example.com'
+	  });
+	  // [END auth_google_provider_params]
+	  return provider;
+	}
+   githubProvider = () => {
+	   var provider = new firebase.auth.GithubAuthProvider();
+	   return provider;
+   } 
+ 
+   signInWithGithub = () => {
+	   var provider = this.githubProvider();
+	   githubSignin(provider);
+   }  
+   
+   signInWithGoogle = () => {
+	   var provider = this.googleProvider();
+	   googleSignInPopup(provider);
+   }
    onChangeHandlerUsername = (event) => {
           //console.log(event.currentTarget.innerHTML);
 		  var username = event.currentTarget.value;
@@ -112,7 +147,10 @@ class App extends Component {
    } 
    
    render() {
+     const responseGoogle = (response) => {
+		  console.log(response);
 
+     }
 	if (this.state.user===null){   
 		return (
 		<div>
@@ -146,7 +184,11 @@ class App extends Component {
 					 <div> 
 						<input type="submit" value="Sign in"/>
 						
-					 </div>		
+					 </div>	
+					 <div>
+						<button onClick = {(event) => {this.signInWithGoogle()}}>Sign in with Google</button>
+						<button onClick = {(event) => {this.signInWithGithub()}}>Sign in with Github</button>
+	                 </div> 
 					 </form>
 					 <button onClick = {(event) => {this.signupHandler()}}>Sign up </button>
 					 <button onClick = {(event) => {this.forgotPasswordHandler()}}>Forgot Password</button>
