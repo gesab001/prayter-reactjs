@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/prayter-reactjs/static/css/main.cd386c89.chunk.css",
-    "main.js": "/prayter-reactjs/static/js/main.994df500.chunk.js",
-    "main.js.map": "/prayter-reactjs/static/js/main.994df500.chunk.js.map",
+    "main.css": "/prayter-reactjs/static/css/main.9a9e9ade.chunk.css",
+    "main.js": "/prayter-reactjs/static/js/main.bb57dc90.chunk.js",
+    "main.js.map": "/prayter-reactjs/static/js/main.bb57dc90.chunk.js.map",
     "runtime-main.js": "/prayter-reactjs/static/js/runtime-main.fb71eec2.js",
     "runtime-main.js.map": "/prayter-reactjs/static/js/runtime-main.fb71eec2.js.map",
     "static/js/2.a1080c57.chunk.js": "/prayter-reactjs/static/js/2.a1080c57.chunk.js",
@@ -10,13 +10,13 @@
     "static/js/3.a42bf234.chunk.js": "/prayter-reactjs/static/js/3.a42bf234.chunk.js",
     "static/js/3.a42bf234.chunk.js.map": "/prayter-reactjs/static/js/3.a42bf234.chunk.js.map",
     "index.html": "/prayter-reactjs/index.html",
-    "static/css/main.cd386c89.chunk.css.map": "/prayter-reactjs/static/css/main.cd386c89.chunk.css.map",
+    "static/css/main.9a9e9ade.chunk.css.map": "/prayter-reactjs/static/css/main.9a9e9ade.chunk.css.map",
     "static/js/2.a1080c57.chunk.js.LICENSE.txt": "/prayter-reactjs/static/js/2.a1080c57.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.fb71eec2.js",
     "static/js/2.a1080c57.chunk.js",
-    "static/css/main.cd386c89.chunk.css",
-    "static/js/main.994df500.chunk.js"
+    "static/css/main.9a9e9ade.chunk.css",
+    "static/js/main.bb57dc90.chunk.js"
   ]
 }
