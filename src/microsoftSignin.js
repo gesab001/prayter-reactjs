@@ -20,9 +20,11 @@ export const microsoftSignInPopup = (provider) => {
 		// OAuth access and id tokens can also be retrieved:
 		var accessToken = credential.accessToken;
 		var idToken = credential.idToken;
+		console.log("access token" + accessToken);
 	  })
 	  .catch((error) => {
 		// Handle error.
+		console.log(error);
 	  });
 }
 
