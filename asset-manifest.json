@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/prayter-reactjs/static/css/main.e0c51379.chunk.css",
+    "main.css": "/prayter-reactjs/static/css/main.78f5211a.chunk.css",
     "main.js": "/prayter-reactjs/static/js/main.aedf8279.chunk.js",
     "main.js.map": "/prayter-reactjs/static/js/main.aedf8279.chunk.js.map",
     "runtime-main.js": "/prayter-reactjs/static/js/runtime-main.fb71eec2.js",
@@ -10,13 +10,13 @@
     "static/js/3.a42bf234.chunk.js": "/prayter-reactjs/static/js/3.a42bf234.chunk.js",
     "static/js/3.a42bf234.chunk.js.map": "/prayter-reactjs/static/js/3.a42bf234.chunk.js.map",
     "index.html": "/prayter-reactjs/index.html",
-    "static/css/main.e0c51379.chunk.css.map": "/prayter-reactjs/static/css/main.e0c51379.chunk.css.map",
+    "static/css/main.78f5211a.chunk.css.map": "/prayter-reactjs/static/css/main.78f5211a.chunk.css.map",
     "static/js/2.a1080c57.chunk.js.LICENSE.txt": "/prayter-reactjs/static/js/2.a1080c57.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.fb71eec2.js",
     "static/js/2.a1080c57.chunk.js",
-    "static/css/main.e0c51379.chunk.css",
+    "static/css/main.78f5211a.chunk.css",
     "static/js/main.aedf8279.chunk.js"
   ]
 }
