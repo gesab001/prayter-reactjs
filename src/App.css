@@ -145,8 +145,15 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+ 
 }
 
+@media only screen and (max-width: 600px) {
+  .loginContainer {
+    flex-direction: column-reverse;
+  }
+}
+  
 .signInButtonsContainer {
  display: flex;
  flex-direction: row;
@@ -170,7 +177,9 @@
   background-color: black;	
   color: white;
   height: 100%;
+  width: 100%;
+  
 }
 .left, .right{
-  width: 100%;
+  flex: 1 1 0%;
 }
