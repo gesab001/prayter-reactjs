@@ -1,0 +1,19 @@
+.fastpraybuttonContainer{
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+
+   margin-top: 5%;
+}
+
+.fast .pray {
+   padding: 20px;
+}
+
+.pray {
+
+}
+
+.fast {
+
+}

@@ -1,6 +1,7 @@
 import React, { Component, createRef } from "react";
 import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
 import {Link} from "react-router-dom";
+import './Compose.css';
 
 class Compose extends Component {
 
@@ -10,7 +11,8 @@ class Compose extends Component {
     this.state = {
 	  newfast: null,
 	  fastlist: [], 
-	  inputField: null
+	  inputField: null,
+	  fastForm: false
     };
 	
 	//this.inputField = React.createRef();
@@ -64,6 +66,16 @@ class Compose extends Component {
 		 
 	}
 	
+	onViewChange = (event) => {
+		console.log(event.target.id);
+		if (event.target.id==="prayer"){
+			this.setState({fastForm: false});
+		}
+		else if (event.target.id==="fasting"){
+			this.setState({fastForm: true});
+		}
+	}
+	
 
 	
 
@@ -72,18 +84,26 @@ class Compose extends Component {
 	 return (
 	    <div>
 				           <Link to="/home">Back</Link>
-			<div> 
-			   <label>
-			      Prayer
-			      <input type="radio" id="prayer" name="view" value="prayer" onChange = {(event) => this.onViewChange(event)}/>
-			   </label>	  
-			   <label>
-			      Fasting
-			      <input type="radio" id="fasting" name="view" value="fasting" onChange = {(event) => this.onViewChange(event)}/>
-			   </label>	 
-           </div>
-		   <div>
+			<div className="fastpraybuttonContainer"> 
+			
+			   <div className="pray">
 
+					  Prayer
+					  <input type="radio" id="prayer" name="view"  value="prayer" onChange = {(event) => this.onViewChange(event)}/>
+
+			   </div>
+
+			   <div className="fast">
+
+					  Fasting
+					  <input type="radio" id="fasting" name="view" value="fasting" onChange = {(event) => this.onViewChange(event)}/>
+ 
+			   </div>	   
+           </div>
+		   {this.state.fastForm
+			   ?
+		     <div>
+                  
 			       <h1>New fast</h1>
 				   <div>Dear heavenly Father, help me to fast from  </div>
 				   <div contentEditable onInput = {(event) => this.newFastHandler(event)}></div>
@@ -93,8 +113,8 @@ class Compose extends Component {
 				   </button>
 
 			 </div>
-			 
-			 		   <div>
+			 :
+			 <div>
 			       <h1>New prayer</h1>
 				   <div>Dear heavenly Father, </div>
 				   <div ref={this.inputField} contentEditable onInput = {(event) => this.newprayerHandler(event)}></div>
@@ -104,7 +124,7 @@ class Compose extends Component {
 				   </button>
 
 			 </div>
-
+		   }
 		  
 		</div>
 	 )
