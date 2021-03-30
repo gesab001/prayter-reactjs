@@ -103,6 +103,14 @@ class Prayer extends Component {
 		var timestamp = timestamp + (60*24*60*60*1000);
 		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
 	} 
+	
+	getDaysLeft = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = end - now;
+		console.log("left:" + left);
+		return Math.round(left / 1000 / 60 /60 / 24);
+	}
   render() {
 	 const {list, list2} = this.state;
 	 const mystyle = {position: "relative", zIndex: "1"};
@@ -132,9 +140,10 @@ class Prayer extends Component {
 					{list2 &&
 					  list2.map((item, index) => (
 						<li>
-						  <div class="article" >
+						  <div key={index} class="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date)}</p>
+						  <p>Days left: {this.getDaysLeft(item.item.date)}</p>
 						  <p>{item.item.message}</p>
 						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete
