@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/prayter-reactjs/static/css/main.54be2367.chunk.css",
-    "main.js": "/prayter-reactjs/static/js/main.b171c3f6.chunk.js",
-    "main.js.map": "/prayter-reactjs/static/js/main.b171c3f6.chunk.js.map",
+    "main.js": "/prayter-reactjs/static/js/main.534abbbd.chunk.js",
+    "main.js.map": "/prayter-reactjs/static/js/main.534abbbd.chunk.js.map",
     "runtime-main.js": "/prayter-reactjs/static/js/runtime-main.77a5a017.js",
     "runtime-main.js.map": "/prayter-reactjs/static/js/runtime-main.77a5a017.js.map",
     "static/js/2.7632b330.chunk.js": "/prayter-reactjs/static/js/2.7632b330.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.77a5a017.js",
     "static/js/2.7632b330.chunk.js",
     "static/css/main.54be2367.chunk.css",
-    "static/js/main.b171c3f6.chunk.js"
+    "static/js/main.534abbbd.chunk.js"
   ]
 }
