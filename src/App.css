@@ -133,10 +133,14 @@
 }
 .signInButtons {
   cursor: pointer;
-  height: 32px;
-  width: 32px;
+
   margin: 10px;
 
+}
+
+.socialIcons {
+  height: 32px;
+  width: 32px;
 }
 
 .loginContainer {
@@ -156,7 +160,8 @@
   
 .signInButtonsContainer {
  display: flex;
- flex-direction: row;
+ flex-direction: column	;
+ width: 316px;
  
 }
 
@@ -182,4 +187,27 @@
 }
 .left, .right{
   flex: 1 1 0%;
+}
+
+.signUpLink {
+  color: blue;
+  cursor: pointer;
+}
+
+.forgotPassword {
+  color: blue;
+  cursor: pointer;
+  font-size: 12px !important;
+}
+
+.loginbuttons {
+  display: flex;
+  flex-direction: row;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 1px;
+  margin: 10px;
+  align-items: center;
+  justify-content: center;
+  border-color: var(--black-100);
 }

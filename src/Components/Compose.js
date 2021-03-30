@@ -84,8 +84,9 @@ class Compose extends Component {
 	 return (
 	    <div>
 				           <Link to="/home">Back</Link>
+				           
 			<div className="fastpraybuttonContainer"> 
-			
+			   
 			   <div className="pray">
 
 					  Prayer
@@ -116,6 +117,7 @@ class Compose extends Component {
 			 :
 			 <div>
 			       <h1>New prayer</h1>
+			       <blockquote>Proverbs 28:9. He that turneth away his ear from hearing the law, even his prayer [shall be] abomination.</blockquote>
 				   <div>Dear heavenly Father, </div>
 				   <div ref={this.inputField} contentEditable onInput = {(event) => this.newprayerHandler(event)}></div>
 				   <div>in Jesus' name, Amen.</div>
