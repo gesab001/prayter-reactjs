@@ -12,7 +12,15 @@ class Prayer extends Component {
     this.state = {
 	  newprayer: null,
 	  list: [],
-	  list2: []
+	  list2: [],
+	  days: true,
+	  hours: false,
+	  minutes: false,
+	  seconds: false,
+	  daysLeft: null,
+	  hoursLeft: null,
+	  minutesLeft: null,
+	  secondsLeft:null
     };
 
     this.unsubscribe = undefined;
@@ -82,7 +90,41 @@ class Prayer extends Component {
    }
 
   
-  	deleteItem = (event, room, id) => {
+  	renewItem = (event, room, id) => {
+         alert("renew fast");
+
+		 
+	}
+
+  	replyItem = (event, room, id) => {
+         alert("reply to prayer");
+
+		 
+	}
+
+  	sayAmenItem = (event, room, id) => {
+         alert("amen");
+
+		 
+	} 
+    
+    viewCommentItem	  = (event, room, id) => {
+         alert("show comments");	 
+	} 
+
+    makePublicItem	  = (event, room, id) => {
+         alert("make public");	 
+	} 
+
+    makePrivateItem	  = (event, room, id) => {
+         alert("private");	 
+	} 
+
+    prayerPartnerOnlyItem	= (event, room, id) => {
+         alert("prayer partners only");	 
+	} 
+					
+	deleteItem = (event, room, id) => {
 		var userconfirm = prompt("type: cancel this item");
 		if (userconfirm=="cancel this item"){
 			console.log("remove: " + id);
@@ -111,6 +153,65 @@ class Prayer extends Component {
 		console.log("left:" + left);
 		return Math.round(left / 1000 / 60 /60 / 24);
 	}
+	getHoursLeft = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = end - now;
+		console.log("left:" + left);
+		return Math.round(left / 1000 / 60 /60);
+	}
+	getMinutesLeft = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = end - now;
+		console.log("left:" + left);
+		return Math.round(left / 1000 / 60);
+	}
+	getSecondsLeft = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = end - now;
+		console.log("left:" + left);
+		return Math.round(left / 1000);
+	}
+	
+	handleChange = (event) => {
+		console.log(event.target.value);
+		var unit = event.target.value;
+		if (unit==="days"){
+			this.setState({
+				days: true,
+				hours: false,
+				minutes: false,
+				seconds: false,
+				
+			});
+		}else if (unit==="hours"){
+			this.setState({
+				days: false,
+				hours: true,
+				minutes: false,
+				seconds: false,
+				
+			});			
+		}else if (unit==="minutes"){
+			this.setState({
+				days: false,
+				hours: false,
+				minutes: true,
+				seconds: false,
+				
+			});			
+		}else if (unit==="seconds"){
+			this.setState({
+				days: false,
+				hours: false,
+				minutes: false,
+				seconds: true,
+				
+			});			
+		}
+	}
   render() {
 	 const {list, list2} = this.state;
 	 const mystyle = {position: "relative", zIndex: "1"};
@@ -129,12 +230,36 @@ class Prayer extends Component {
 						   <button  onClick = {(event) => {this.deleteItem(event, "prayer", item.id)}}>
 									Delete
 							   </button>
+						   <button  onClick = {(event) => {this.replyItem(event, "prayer", item.id)}}>
+									Comment
+							   </button>
+						   <button  onClick = {(event) => {this.sayAmenItem(event, "prayer", item.id)}}>
+									Amen
+							   </button>
+						   <button  onClick = {(event) => {this.viewCommentItem(event, "prayer", item.id)}}>
+									View Comment
+							   </button>
+						   <button  onClick = {(event) => {this.makePublicItem(event, "prayer", item.id)}}>
+									Make Public
+							   </button>
+						   <button  onClick = {(event) => {this.makePrivateItem(event, "prayer", item.id)}}>
+									Make Private
+							   </button>
+						   <button  onClick = {(event) => {this.prayerPartnerOnlyItem(event, "prayer", item.id)}}>
+									Share with Prayer Partners only
+							   </button>							   							   
 						  </div>
 						</li>
 					  ))}
 				  </ul>
 			 </div>
              <h1>Fasting</h1>
+             						  <span>Time left:</span><select  value={this.state.value} onChange={this.handleChange}>
+						    <option value="days">days</option>
+						    <option value="hours">hours</option>
+						    <option value="minutes">minutes</option>
+						    <option value="seconds">seconds</option>
+						  </select>
 			 <div >
 			     <ul>
 					{list2 &&
@@ -143,10 +268,18 @@ class Prayer extends Component {
 						  <div key={index} class="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date)}</p>
-						  <p>Days left: {this.getDaysLeft(item.item.date)}</p>
+
+						  {this.state.days && <p>Days left: {this.getDaysLeft(item.item.date)}</p>}
+						  {this.state.hours && <p>Hours left: {this.getHoursLeft(item.item.date)}</p>}
+						  {this.state.minutes && <p>Minutes left: {this.getMinutesLeft(item.item.date)}</p>}
+						  {this.state.seconds && <p>Seconds left: {this.getSecondsLeft(item.item.date)}</p>}
+
 						  <p>{item.item.message}</p>
 						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete
+							   </button>
+						   <button style={mystyle}  onClick = {(event) => {this.renewItem(event, "fasting", item.id)}}>
+									Renew
 							   </button>
 						  </div>
 						 
