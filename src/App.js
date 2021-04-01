@@ -293,7 +293,7 @@ class App extends Component {
 									<defs>
 										<polygon id="path-1" points="0.171073913 0.0931111111 9.4455087 0.0931111111 9.4455087 9.92442222 0.171073913 9.92442222"/>
 									</defs>
-									<g id="favicon_y19_32x32_custom" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+									<g id="favicon_y19_32x32_custom" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 										<rect fill="#6001D2" x="0" y="0" width="32" height="32"/>
 										<g id="y!" transform="translate(5.000000, 6.000000)">
 											<polygon id="Fill-1" fill="#FFFFFF" points="9.70835927 5 7.04604411 11.4197051 4.40657437 5 0 5 4.91176421 16.0265583 3.14442407 20 7.45914574 20 14 5"/>

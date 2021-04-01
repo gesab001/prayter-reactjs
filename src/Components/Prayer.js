@@ -8,7 +8,10 @@ class Prayer extends Component {
     super(props);
     this.onDataChange = this.onDataChange.bind(this);
     this.onDataChange2 = this.onDataChange2.bind(this);
-
+    this.onDataChangeCounterHour = this.onDataChangeCounterHour.bind(this);
+    this.onDataChangeCounterDay = this.onDataChangeCounterDay.bind(this);
+    this.onDataChangeCounterMonth = this.onDataChangeCounterMonth.bind(this);    
+    this.onDataChangeCounterYear = this.onDataChangeCounterYear.bind(this);
     this.state = {
 	  newprayer: null,
 	  list: [],
@@ -20,24 +23,56 @@ class Prayer extends Component {
 	  daysLeft: null,
 	  hoursLeft: null,
 	  minutesLeft: null,
-	  secondsLeft:null
+	  secondsLeft:null,
+	  hourCounter: 0,
+	  dayCounter: 0,
+	  monthCounter: 0,
+	  yearCounter: 0
     };
 
     this.unsubscribe = undefined;
 	this.unsubscribe2 = undefined;
+	this.unsubscribecounterHour = undefined;
+	this.unsubscribecounterDay = undefined;
+	this.unsubscribecounterMonth = undefined;
+	this.unsubscribecounterYear = undefined;
 
   }
 
    componentDidMount = () => {
-          this.unsubscribe = db.collection("rooms").doc("prayer").collection("private").doc(auth.currentUser.uid).collection("messages").orderBy("date", "desc").limit(3)
+	      var dateNow = new Date();
+	      var hour = dateNow.getHours().toString();
+	      var day = dateNow.getDate().toString();
+	      var month = dateNow.getMonth().toString();
+	      var year = dateNow.getFullYear().toString();
+	      var prayerRoom = "prayer";
+	      var user = auth.currentUser.uid;
+	      var yearCollection = db.collection("rooms").doc(prayerRoom).collection("private").doc(user).collection("counters").doc("years").collection(year);
+	      var monthCollection = yearCollection.doc("month").collection(month);
+	      var dayCollection = monthCollection.doc("date").collection(day);
+          this.unsubscribe = db.collection("rooms").doc(prayerRoom).collection("private").doc(user).collection("messages").orderBy("date", "desc").limit(3)
 		  .onSnapshot(this.onDataChange);
-          this.unsubscribe2 = db.collection("rooms").doc("fasting").collection("private").doc(auth.currentUser.uid).collection("messages").orderBy("date", "desc").limit(3)
+ 
+          this.unsubscribe2 = db.collection("rooms").doc("fasting").collection("private").doc(user).collection("messages").orderBy("date", "desc").limit(3)
 		  .onSnapshot(this.onDataChange2);
+
+          this.unsubscribecounterYear = yearCollection.doc("count")
+		  .onSnapshot(this.onDataChangeCounterYear);
+
+          this.unsubscribecounterMonth = monthCollection.doc("count").onSnapshot(this.onDataChangeCounterMonth);
+
+          this.unsubscribecounterDay = dayCollection.doc("count").onSnapshot(this.onDataChangeCounterDay);
+                    		            
+          this.unsubscribecounterHour = dayCollection.doc("hour").collection(hour).doc("count").onSnapshot(this.onDataChangeCounterHour);
    };
 
    componentWillUnmount() {
      this.unsubscribe();
      this.unsubscribe2();
+     this.unsubscribecounterHour();     
+     this.unsubscribecounterDay();
+     this.unsubscribecounterMonth();
+     this.unsubscribecounterYear();
 
    }
    
@@ -47,15 +82,15 @@ class Prayer extends Component {
 					var item = {"id": change.doc.id, "item": change.doc.data()};
 
 					if (change.type === "added") {
-						console.log("New prayer: ", change.doc.data());	
+						//console.log("New prayer: ", change.doc.data());	
 						items.unshift(item);
 						
 					}
 					if (change.type === "modified") {
-						console.log("Modified prayer: ", change.doc.data());
+						//console.log("Modified prayer: ", change.doc.data());
 					}
 					if (change.type === "removed") {
-						console.log("Removed prayer: ", change.doc.data());
+						//console.log("Removed prayer: ", change.doc.data());
 						var filtered = items.filter(function(value, index, arr){
 						    return value.id!=item.id;
 						});
@@ -69,17 +104,18 @@ class Prayer extends Component {
 	   let items = this.state.list2;
 	   snapshot.docChanges().forEach(function(change) {
 					var item = {"id": change.doc.id, "item": change.doc.data()};
-
+                  //  console.log(item);
 					if (change.type === "added") {
-						console.log("New prayer: ", change.doc.data());	
+						//console.log("New prayer: ", change.doc.data());	
 						items.unshift(item);
 						
 					}
 					if (change.type === "modified") {
-						console.log("Modified prayer: ", change.doc.data());
+					//	console.log("Modified prayer: ", change.doc.data());
+						
 					}
 					if (change.type === "removed") {
-						console.log("Removed prayer: ", change.doc.data());
+					//	console.log("Removed prayer: ", change.doc.data());
 						var filtered = items.filter(function(value, index, arr){
 						    return value.id!=item.id;
 						});
@@ -89,6 +125,36 @@ class Prayer extends Component {
 	    this.setState({list2: items});
    }
 
+   onDataChangeCounterHour(doc){
+	   var total = doc.data().total;   
+       console.log(total);
+       this.setState({hourCounter: total});   
+   }
+   
+   onDataChangeCounterDay(doc){
+	   var total = doc.data().total;   
+       console.log(total);
+       this.setState({dayCounter: total});   
+   }
+
+   onDataChangeCounterMonth(doc){
+	   var total = doc.data().total;   
+       console.log(total);
+       this.setState({monthCounter: total});   
+   }
+   
+   onDataChangeCounterYear(doc){
+	   var total = doc.data().total;   
+       console.log(total);
+       this.setState({yearCounter: total});   
+   }
+
+   onDataChangeCounterDay(doc){
+	   var total = doc.data().total;   
+       console.log(total);
+       this.setState({dayCounter: total});   
+   }
+      
   
   	renewItem = (event, room, id) => {
          alert("renew fast");
@@ -150,7 +216,7 @@ class Prayer extends Component {
 		var now = new Date();
 		var end = new Date(timestamp + (60*24*60*60*1000));
 		var left = end - now;
-		console.log("left:" + left);
+	//	console.log("left:" + left);
 		return Math.round(left / 1000 / 60 /60 / 24);
 	}
 	getHoursLeft = (timestamp) => {
@@ -220,11 +286,15 @@ class Prayer extends Component {
 	    <div >
              <h1>Prayer</h1>
 			 <div>
+			     <p>Total prayers this hour: {this.state.hourCounter}</p>
+			     <p>Total prayers today: {this.state.dayCounter}</p>
+			     <p>Total prayers this month: {this.state.monthCounter}</p>
+			     <p>Total prayers this year: {this.state.yearCounter}</p>
 			     <ul>
 					{list &&
 					  list.map((item, index) => (
-						<li>
-						  <div class="article">
+						<li key={index}>
+						  <div className="article">
 						  <p>Submitted: {this.getStartDate(item.item.date)}</p>
 						  <p>{item.item.message}</p>
 						   <button  onClick = {(event) => {this.deleteItem(event, "prayer", item.id)}}>
@@ -264,8 +334,8 @@ class Prayer extends Component {
 			     <ul>
 					{list2 &&
 					  list2.map((item, index) => (
-						<li>
-						  <div key={index} class="article" >
+						<li key={index}>
+						  <div  className="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date)}</p>
 

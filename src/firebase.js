@@ -44,6 +44,63 @@ export const addToFirestore = (room, item) => {
 										  //alert("error");
 
 			});
+	var dateItem = new Date(item.date)
+	var year = dateItem.getFullYear().toString();
+	var month = dateItem.getMonth().toString();
+	var day = dateItem.getDate().toString();
+	var hour = dateItem.getHours().toString();	
+	
+	var docRefYear = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("count");
+	var docRefMonth = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("month").collection(month).doc("count");
+	var docRefDay = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("month").collection(month).doc("date").collection(day).doc("count");
+	// Atomically increment the population of the city by 50.
+	var docRefHour = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("month").collection(month).doc("date").collection(day).doc("hour").collection(hour).doc("count");
+    
+    
+    //increment year
+	docRefYear.update({
+		total: firebase.firestore.FieldValue.increment(1)
+	}).then(() => {
+		console.log("Document successfully updated!");
+	}).catch((error) => {
+		// The document probably doesn't exist.
+		console.error("Error updating year increment: ", error);
+		docRefYear.set({total: 1});
+	});
+	
+	//increment month
+	docRefMonth.update({
+		total: firebase.firestore.FieldValue.increment(1)
+	}).then(() => {
+		console.log("Document successfully updated!");
+	}).catch((error) => {
+		// The document probably doesn't exist.
+		console.error("Error updating month increment: ", error);
+		docRefMonth.set({total: 1});
+	});
+	
+	//increment day
+	docRefDay.update({
+		total: firebase.firestore.FieldValue.increment(1)
+	}).then(() => {
+		console.log("Document successfully updated!");
+	}).catch((error) => {
+		// The document probably doesn't exist.
+		console.error("Error updating day increment: ", error);
+		docRefDay.set({total: 1});
+	});	
+		
+    //increment hour
+	docRefHour.update({
+		total: firebase.firestore.FieldValue.increment(1)
+	}).then(() => {
+		console.log("Document successfully updated!");
+	})
+	.catch((error) => {
+		// The document probably doesn't exist.
+		console.error("Error updating hour increment: ", error);
+		docRefHour.set({total: 1});
+	});	
 }
 
 export const deleteFromFirestore = (room, userId, id) => {

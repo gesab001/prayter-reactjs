@@ -7,12 +7,13 @@ class Compose extends Component {
 
  constructor(props) {
     super(props);
-
+    this.myRefPrayer = React.createRef();
     this.state = {
 	  newfast: null,
 	  fastlist: [], 
 	  inputField: null,
-	  fastForm: false
+	  fastForm: false,
+	  prayerForm: true
     };
 	
 	//this.inputField = React.createRef();
@@ -69,10 +70,11 @@ class Compose extends Component {
 	onViewChange = (event) => {
 		console.log(event.target.id);
 		if (event.target.id==="prayer"){
-			this.setState({fastForm: false});
+			this.setState({fastForm: false, prayerForm:true});
 		}
 		else if (event.target.id==="fasting"){
-			this.setState({fastForm: true});
+			this.setState({fastForm: true, prayerForm: false});
+
 		}
 	}
 	
@@ -90,14 +92,14 @@ class Compose extends Component {
 			   <div className="pray">
 
 					  Prayer
-					  <input type="radio" id="prayer" name="view"  value="prayer" onChange = {(event) => this.onViewChange(event)}/>
+					  <input type="radio" id="prayer" name="view"  ref={this.myRefPrayer} value="prayer" checked={this.state.prayerForm} onChange = {(event) => this.onViewChange(event)}/>
 
 			   </div>
 
 			   <div className="fast">
 
 					  Fasting
-					  <input type="radio" id="fasting" name="view" value="fasting" onChange = {(event) => this.onViewChange(event)}/>
+					  <input type="radio" id="fasting" name="view" value="fasting"  checked={this.state.fastForm} onChange = {(event) => this.onViewChange(event)}/>
  
 			   </div>	   
            </div>
