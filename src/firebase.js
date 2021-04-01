@@ -56,10 +56,7 @@ export const addToFirestore = (room, item) => {
 
 			});
 
-
-
 	var dateItem = new Date(item.date);
-
 
     var now = new Date();
 	var start = new Date(now.getFullYear(), 0, 0);
@@ -83,11 +80,7 @@ export const addToFirestore = (room, item) => {
 	var docRefWeek = yearCollection.doc("week").collection(week).doc("count");
 	var docRefDay = monthCollection.doc("date").collection(day).doc("count");
 	var docRefHour = monthCollection.doc("date").collection(day).doc("hour").collection(hour).doc("count");
-				
-
-
-    
-    
+				  
     //increment year
 	docRefYear.update({
 		total: firebase.firestore.FieldValue.increment(1)
@@ -143,6 +136,44 @@ export const addToFirestore = (room, item) => {
 		console.error("Error updating hour increment: ", error);
 		docRefHour.set({total: 1});
 	});	
+}
+
+export const amen = (room, userId, id) => {
+	var docRef = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc("count");	
+	docRef.update({
+		total: firebase.firestore.FieldValue.increment(1)
+	}).then(() => {
+		console.log("amen Document successfully updated!");
+	})
+	.catch((error) => {
+		// The document probably doesn't exist.
+		console.error("Error updating amen increment: ", error);
+		docRef.set({total: 1});
+	});	
+
+	var docRefUserAdd = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc(userId);	
+	var docRefAmenCount = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc("count");	
+
+	docRefUserAdd.get()
+	  .then((docSnapshot) => {
+		if (docSnapshot.exists) {
+		  console.log("user already said amen");
+		} else {
+		  docRefUserAdd.set({user: userId}) // add user
+		  docRefAmenCount.update({ //increment amen
+				total: firebase.firestore.FieldValue.increment(1)
+			}).then(() => {
+				console.log("amen increment successfully updated!");
+			})
+			.catch((error) => {
+				// The document probably doesn't exist.
+				console.error("Error updating amen increment: ", error);
+				docRef.set({total: 1});
+			});	
+		}
+	});
+
+	
 }
 
 export const deleteFromFirestore = (room, userId, id) => {

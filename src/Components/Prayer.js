@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {auth, db, addToFirestore, deleteFromFirestore, getWeek} from "../firebase";
+import {auth, db, addToFirestore, deleteFromFirestore, getWeek, amen} from "../firebase";
 import "./Prayer.css";
 
 class Prayer extends Component {
@@ -135,42 +135,65 @@ class Prayer extends Component {
    }
 
    onDataChangeCounterHour(doc){
-	   var total = doc.data().total;   
-       console.log(total);
-       this.setState({hourCounter: total});   
+	   try {
+		   var total = doc.data().total;   
+		   console.log(total);
+		   this.setState({hourCounter: total});   
+       }catch(error){
+		   console.log(error.message);
+	   }
    }
    
    onDataChangeCounterDay(doc){
-	   var total = doc.data().total;   
-       console.log(total);
-       this.setState({dayCounter: total});   
+	  try{ 
+	    var total = doc.data().total;   
+        console.log(total);
+        this.setState({dayCounter: total});   
+      }catch(error){
+		   console.log(error.message);		  
+	  }
    }
 
    onDataChangeCounterMonth(doc){
-	   var total = doc.data().total;   
-       console.log(total);
-       this.setState({monthCounter: total});   
+	   try {
+		   var total = doc.data().total;   
+		   console.log(total);
+		   this.setState({monthCounter: total});   
+		}catch(error){
+			console.log(error.message);
+		}
    }
    
    onDataChangeCounterYear(doc){
+	  try { 
 	   var total = doc.data().total;   
        console.log(total);
-       this.setState({yearCounter: total});   
+       this.setState({yearCounter: total}); 
+      }catch(error){
+			console.log(error.message);
+	  }   
    }
 
    onDataChangeCounterWeek(doc){
-	   var total = doc.data().total;   
-       console.log(total);
-       this.setState({weekCounter: total});   
+	  try{ 
+		   var total = doc.data().total;   
+		   console.log(total);
+		   this.setState({weekCounter: total});   
+      }catch(error){
+ 			console.log(error.message);
+	  }
    }
    
    onDataChangeCounterDay(doc){
+	 try {  
 	   var total = doc.data().total;   
        console.log(total);
        this.setState({dayCounter: total});   
+     }catch(error){
+		console.log(error.message);
+	 }
    }
       
-  
   	renewItem = (event, room, id) => {
          alert("renew fast");
 
@@ -183,8 +206,10 @@ class Prayer extends Component {
 		 
 	}
 
-  	sayAmenItem = (event, room, id) => {
-         alert("amen");
+  	sayAmenItem = (room, id) => {
+         alert("amen" + auth.currentUser.uid);
+         alert("messageid" + id);
+         amen(room, auth.currentUser.uid, id);
 
 		 
 	} 
@@ -320,7 +345,7 @@ class Prayer extends Component {
 						   <button  onClick = {(event) => {this.replyItem(event, "prayer", item.id)}}>
 									Comment
 							   </button>
-						   <button  onClick = {(event) => {this.sayAmenItem(event, "prayer", item.id)}}>
+						   <button  onClick = {(event) => {this.sayAmenItem("prayer", item.id)}}>
 									Amen
 							   </button>
 						   <button  onClick = {(event) => {this.viewCommentItem(event, "prayer", item.id)}}>
