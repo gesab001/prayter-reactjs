@@ -19,7 +19,18 @@ export const auth = firebase.auth();
 export const db = firebase.firestore();
 
 
-    
+
+export const getWeek = () => {
+    var now = new Date();
+	var start = new Date(now.getFullYear(), 0, 0);
+	var diff = now - start;
+	var oneDay = 1000 * 60 * 60 * 24;
+	var dayOfTheYear = Math.floor(diff / oneDay);
+    console.log("dayOfTheYear" + dayOfTheYear);
+    var week = (Math.floor(dayOfTheYear / 7)).toString();	
+    return week;
+}    
+
 export const addToFirestore = (room, item) => {
 	console.log("add: " + room);
 	var docRef = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("messages");
@@ -44,17 +55,37 @@ export const addToFirestore = (room, item) => {
 										  //alert("error");
 
 			});
-	var dateItem = new Date(item.date)
+
+
+
+	var dateItem = new Date(item.date);
+
+
+    var now = new Date();
+	var start = new Date(now.getFullYear(), 0, 0);
+	var diff = now - start;
+	var oneDay = 1000 * 60 * 60 * 24;
+	var dayOfTheYear = Math.floor(diff / oneDay);
+    console.log("dayOfTheYear" + dayOfTheYear);
 	var year = dateItem.getFullYear().toString();
 	var month = dateItem.getMonth().toString();
+    var week = (Math.floor(dayOfTheYear / 7)).toString();
+    console.log("weeknumber" + week);
+
 	var day = dateItem.getDate().toString();
 	var hour = dateItem.getHours().toString();	
-	
-	var docRefYear = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("count");
-	var docRefMonth = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("month").collection(month).doc("count");
-	var docRefDay = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("month").collection(month).doc("date").collection(day).doc("count");
-	// Atomically increment the population of the city by 50.
-	var docRefHour = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year).doc("month").collection(month).doc("date").collection(day).doc("hour").collection(hour).doc("count");
+    
+    var yearCollection =  db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("counters").doc("years").collection(year);
+    var monthCollection = yearCollection.doc("month").collection(month);
+
+	var docRefYear = yearCollection.doc("count");   
+	var docRefMonth = monthCollection.doc("count");
+	var docRefWeek = yearCollection.doc("week").collection(week).doc("count");
+	var docRefDay = monthCollection.doc("date").collection(day).doc("count");
+	var docRefHour = monthCollection.doc("date").collection(day).doc("hour").collection(hour).doc("count");
+				
+
+
     
     
     //increment year
@@ -78,7 +109,18 @@ export const addToFirestore = (room, item) => {
 		console.error("Error updating month increment: ", error);
 		docRefMonth.set({total: 1});
 	});
-	
+
+	//increment week
+	docRefWeek.update({
+		total: firebase.firestore.FieldValue.increment(1)
+	}).then(() => {
+		console.log("Document successfully updated!");
+	}).catch((error) => {
+		// The document probably doesn't exist.
+		console.error("Error updating week increment: ", error);
+		docRefWeek.set({total: 1});
+	});
+		
 	//increment day
 	docRefDay.update({
 		total: firebase.firestore.FieldValue.increment(1)

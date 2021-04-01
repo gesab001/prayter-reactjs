@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {auth, db, addToFirestore, deleteFromFirestore} from "../firebase";
+import {auth, db, addToFirestore, deleteFromFirestore, getWeek} from "../firebase";
 import "./Prayer.css";
 
 class Prayer extends Component {
@@ -10,6 +10,8 @@ class Prayer extends Component {
     this.onDataChange2 = this.onDataChange2.bind(this);
     this.onDataChangeCounterHour = this.onDataChangeCounterHour.bind(this);
     this.onDataChangeCounterDay = this.onDataChangeCounterDay.bind(this);
+    this.onDataChangeCounterWeek = this.onDataChangeCounterWeek.bind(this);
+
     this.onDataChangeCounterMonth = this.onDataChangeCounterMonth.bind(this);    
     this.onDataChangeCounterYear = this.onDataChangeCounterYear.bind(this);
     this.state = {
@@ -26,6 +28,7 @@ class Prayer extends Component {
 	  secondsLeft:null,
 	  hourCounter: 0,
 	  dayCounter: 0,
+	  weekCounter: 0,
 	  monthCounter: 0,
 	  yearCounter: 0
     };
@@ -34,6 +37,7 @@ class Prayer extends Component {
 	this.unsubscribe2 = undefined;
 	this.unsubscribecounterHour = undefined;
 	this.unsubscribecounterDay = undefined;
+	this.unsubscribecounterWeek = undefined;
 	this.unsubscribecounterMonth = undefined;
 	this.unsubscribecounterYear = undefined;
 
@@ -43,6 +47,7 @@ class Prayer extends Component {
 	      var dateNow = new Date();
 	      var hour = dateNow.getHours().toString();
 	      var day = dateNow.getDate().toString();
+	      var week = getWeek();
 	      var month = dateNow.getMonth().toString();
 	      var year = dateNow.getFullYear().toString();
 	      var prayerRoom = "prayer";
@@ -59,7 +64,10 @@ class Prayer extends Component {
           this.unsubscribecounterYear = yearCollection.doc("count")
 		  .onSnapshot(this.onDataChangeCounterYear);
 
+
           this.unsubscribecounterMonth = monthCollection.doc("count").onSnapshot(this.onDataChangeCounterMonth);
+
+          this.unsubscribecounterWeek = yearCollection.doc("week").collection(week).doc("count").onSnapshot(this.onDataChangeCounterWeek);
 
           this.unsubscribecounterDay = dayCollection.doc("count").onSnapshot(this.onDataChangeCounterDay);
                     		            
@@ -71,6 +79,7 @@ class Prayer extends Component {
      this.unsubscribe2();
      this.unsubscribecounterHour();     
      this.unsubscribecounterDay();
+     this.unsubscribecounterWeek();
      this.unsubscribecounterMonth();
      this.unsubscribecounterYear();
 
@@ -149,6 +158,12 @@ class Prayer extends Component {
        this.setState({yearCounter: total});   
    }
 
+   onDataChangeCounterWeek(doc){
+	   var total = doc.data().total;   
+       console.log(total);
+       this.setState({weekCounter: total});   
+   }
+   
    onDataChangeCounterDay(doc){
 	   var total = doc.data().total;   
        console.log(total);
@@ -288,6 +303,8 @@ class Prayer extends Component {
 			 <div>
 			     <p>Total prayers this hour: {this.state.hourCounter}</p>
 			     <p>Total prayers today: {this.state.dayCounter}</p>
+			     <p>Total prayers this week: {this.state.weekCounter}</p>
+
 			     <p>Total prayers this month: {this.state.monthCounter}</p>
 			     <p>Total prayers this year: {this.state.yearCounter}</p>
 			     <ul>
