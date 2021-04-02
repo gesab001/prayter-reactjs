@@ -280,7 +280,45 @@ class Prayer extends Component {
 		console.log("left:" + left);
 		return Math.round(left / 1000);
 	}
+
+	getDaysExpired = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = now - end;
+	//	console.log("left:" + left);
+		return Math.round(left / 1000 / 60 /60 / 24);
+	}
+	getHoursExpired = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = now - end;
+		console.log("left:" + left);
+		return Math.round(left / 1000 / 60 /60);
+	}
+	getMinutesExpired = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = now - end;
+		console.log("left:" + left);
+		return Math.round(left / 1000 / 60);
+	}
+	getSecondsExpired = (timestamp) => {
+		var now = new Date();
+		var end = new Date(timestamp + (60*24*60*60*1000));
+		var left = now - end;
+		console.log("left:" + left);
+		return Math.round(left / 1000);
+	}
 	
+	isExpired = (timestamp) => {
+		var result = this.getSecondsLeft(timestamp);
+		console.log(result);
+		if (result<0){
+		  return true;
+	    }else{
+		  return false;	
+		}
+	}	
 	handleChange = (event) => {
 		console.log(event.target.value);
 		var unit = event.target.value;
@@ -380,12 +418,23 @@ class Prayer extends Component {
 						  <div  className="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date)}</p>
-
-						  {this.state.days && <p>Days left: {this.getDaysLeft(item.item.date)}</p>}
-						  {this.state.hours && <p>Hours left: {this.getHoursLeft(item.item.date)}</p>}
-						  {this.state.minutes && <p>Minutes left: {this.getMinutesLeft(item.item.date)}</p>}
-						  {this.state.seconds && <p>Seconds left: {this.getSecondsLeft(item.item.date)}</p>}
-
+                          {this.isExpired(item.item.date)
+				?
+							 <div>
+							  {this.state.days && <p>Fasting expired {this.getDaysExpired(item.item.date)} days ago</p>}
+							  {this.state.hours && <p>Fasting expired {this.getHoursExpired(item.item.date)} hours ago</p>}
+							  {this.state.minutes && <p>Fasting expired {this.getMinutesExpired(item.item.date)} minutes ago</p>}
+							  {this.state.seconds && <p>Fasting expired {this.getSecondsExpired(item.item.date)} seconds ago</p>}							
+							 </div>
+							   
+							:	  
+							 <div> 
+							  {this.state.days && <p>Days left: {this.getDaysLeft(item.item.date)}</p>}
+							  {this.state.hours && <p>Hours left: {this.getHoursLeft(item.item.date)}</p>}
+							  {this.state.minutes && <p>Minutes left: {this.getMinutesLeft(item.item.date)}</p>}
+							  {this.state.seconds && <p>Seconds left: {this.getSecondsLeft(item.item.date)}</p>}
+							 </div> 
+					      }
 						  <p>{item.item.message}</p>
 						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete

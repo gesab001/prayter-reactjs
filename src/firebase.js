@@ -139,19 +139,7 @@ export const addToFirestore = (room, item) => {
 }
 
 export const amen = (room, userId, id) => {
-	var docRef = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc("count");	
-	docRef.update({
-		total: firebase.firestore.FieldValue.increment(1)
-	}).then(() => {
-		console.log("amen Document successfully updated!");
-	})
-	.catch((error) => {
-		// The document probably doesn't exist.
-		console.error("Error updating amen increment: ", error);
-		docRef.set({total: 1});
-	});	
-
-	var docRefUserAdd = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc(userId);	
+	var docRefUserAdd = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc("list").collection("users").doc(userId);	
 	var docRefAmenCount = db.collection("rooms").doc("prayer").collection("private").doc(userId).collection("messages").doc(id).collection("amen").doc("count");	
 
 	docRefUserAdd.get()
@@ -168,7 +156,7 @@ export const amen = (room, userId, id) => {
 			.catch((error) => {
 				// The document probably doesn't exist.
 				console.error("Error updating amen increment: ", error);
-				docRef.set({total: 1});
+				docRefAmenCount.set({total: 1});
 			});	
 		}
 	});
