@@ -58,8 +58,7 @@ class Prayer extends Component {
           this.unsubscribe = db.collection("rooms").doc(prayerRoom).collection("private").doc(user).collection("messages").orderBy("date", "desc").limit(3)
 		  .onSnapshot(this.onDataChange);
  
-          this.unsubscribe2 = db.collection("rooms").doc("fasting").collection("private").doc(user).collection("messages").orderBy("date", "desc").limit(3)
-		  .onSnapshot(this.onDataChange2);
+          this.unsubscribe2 = db.collection("rooms").doc("fasting").collection("private").doc(user).collection("messages").orderBy("date", "desc").onSnapshot(this.onDataChange2);
 
           this.unsubscribecounterYear = yearCollection.doc("count")
 		  .onSnapshot(this.onDataChangeCounterYear);
