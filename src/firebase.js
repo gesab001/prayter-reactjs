@@ -39,6 +39,7 @@ export const addToFirestore = (room, item) => {
 			  userId: item.userId,
 			  message: item.message,
 			  date: item.date,
+			  numberofdays: item.numberofdays,
 			  recurring: item.recurring
 
 			}) 

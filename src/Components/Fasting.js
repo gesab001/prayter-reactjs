@@ -51,7 +51,7 @@ class Fasting extends Component {
    
     newFastHandler = (event) => {
           //console.log(event.currentTarget.innerHTML);
-		  var fast = "Dear heavenly Father, help me to fast from " +  event.currentTarget.innerHTML + " for 60 days, in Jesus' name, Amen";
+		  var fast = "Dear heavenly Father, help me to fast " +  event.currentTarget.innerHTML + " for 60 days, in Jesus' name, Amen";
 		  this.setState({newfast: fast});
     };
 	
@@ -93,9 +93,9 @@ class Fasting extends Component {
 		   <div>
 		           <Link to="/home">Cancel</Link>
 			       <h1>New fast</h1>
-				   <div>Dear heavenly Father, help me to fast from  </div>
+				   <div>Dear heavenly Father, help me to fast   </div>
 				   <div contentEditable onInput = {(event) => this.newFastHandler(event)}></div>
-				   <div>for 60 days, in Jesus' name, Amen.</div>
+				   <div>for <span>60</span> days, in Jesus' name, Amen.</div>
 				   <button  onClick = {(event) => {this.addFast(event)}}>
 						Send
 				   </button>

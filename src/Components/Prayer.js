@@ -246,71 +246,79 @@ class Prayer extends Component {
 		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
 	}
  
-	getEndDate = (timestamp) => {
-		var timestamp = timestamp + (60*24*60*60*1000);
+	getEndDate = (timestamp, numberofdays) => {
+		console.log(numberofdays);
+		if(numberofdays==undefined){
+		  numberofdays = 60;
+		}
+		var timestamp = timestamp + (numberofdays*24*60*60*1000);
 		return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp);
+		
 	} 
 	
-	getDaysLeft = (timestamp) => {
+	getDaysLeft = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		if(numberofdays==undefined){
+		  numberofdays = 60;
+		}
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = end - now;
 	//	console.log("left:" + left);
 		return Math.round(left / 1000 / 60 /60 / 24);
 	}
-	getHoursLeft = (timestamp) => {
+	getHoursLeft = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = end - now;
 		console.log("left:" + left);
 		return Math.round(left / 1000 / 60 /60);
 	}
-	getMinutesLeft = (timestamp) => {
+	getMinutesLeft = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = end - now;
 		console.log("left:" + left);
 		return Math.round(left / 1000 / 60);
 	}
-	getSecondsLeft = (timestamp) => {
+	getSecondsLeft = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = end - now;
 		console.log("left:" + left);
 		return Math.round(left / 1000);
 	}
 
-	getDaysExpired = (timestamp) => {
+	getDaysExpired = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = now - end;
 	//	console.log("left:" + left);
 		return Math.round(left / 1000 / 60 /60 / 24);
 	}
-	getHoursExpired = (timestamp) => {
+	getHoursExpired = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = now - end;
 		console.log("left:" + left);
 		return Math.round(left / 1000 / 60 /60);
 	}
-	getMinutesExpired = (timestamp) => {
+	getMinutesExpired = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = now - end;
 		console.log("left:" + left);
 		return Math.round(left / 1000 / 60);
 	}
-	getSecondsExpired = (timestamp) => {
+	getSecondsExpired = (timestamp, numberofdays) => {
 		var now = new Date();
-		var end = new Date(timestamp + (60*24*60*60*1000));
+		var end = new Date(timestamp + (numberofdays*24*60*60*1000));
 		var left = now - end;
 		console.log("left:" + left);
 		return Math.round(left / 1000);
 	}
 	
-	isExpired = (timestamp) => {
-		var result = this.getSecondsLeft(timestamp);
+	isExpired = (timestamp, numberofdays) => {
+		var result = this.getSecondsLeft(timestamp, numberofdays);
 		console.log(result);
 		if (result<0){
 		  return true;
@@ -318,6 +326,14 @@ class Prayer extends Component {
 		  return false;	
 		}
 	}	
+	
+	convertIntToString = (numberofdays) => {
+	    if(numberofdays==undefined){
+		  numberofdays = 60;
+		}
+		return numberofdays.toString();
+	}
+	
 	handleChange = (event) => {
 		console.log(event.target.value);
 		var unit = event.target.value;
@@ -395,7 +411,7 @@ class Prayer extends Component {
 									Make Private
 							   </button>
 						   <button  onClick = {(event) => {this.prayerPartnerOnlyItem(event, "prayer", item.id)}}>
-									Share with Prayer Partners only
+									Share with Prayer Partners
 							   </button>							   							   
 						  </div>
 						</li>
@@ -416,25 +432,25 @@ class Prayer extends Component {
 						<li key={index}>
 						  <div  className="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
-						  <p>To: {this.getEndDate(item.item.date)}</p>
-                          {this.isExpired(item.item.date)
+						  <p>To: {this.getEndDate(item.item.date, item.item.numberofdays)}</p>
+                          {this.isExpired(item.item.date, 5)
 				?
 							 <div>
-							  {this.state.days && <p>Fasting expired {this.getDaysExpired(item.item.date)} days ago</p>}
-							  {this.state.hours && <p>Fasting expired {this.getHoursExpired(item.item.date)} hours ago</p>}
-							  {this.state.minutes && <p>Fasting expired {this.getMinutesExpired(item.item.date)} minutes ago</p>}
-							  {this.state.seconds && <p>Fasting expired {this.getSecondsExpired(item.item.date)} seconds ago</p>}							
+							  {this.state.days && <p>Fasting expired {this.getDaysExpired(item.item.date, item.item.numberofdays)} days ago</p>}
+							  {this.state.hours && <p>Fasting expired {this.getHoursExpired(item.item.date, item.item.numberofdays)} hours ago</p>}
+							  {this.state.minutes && <p>Fasting expired {this.getMinutesExpired(item.item.date, item.item.numberofdays)} minutes ago</p>}
+							  {this.state.seconds && <p>Fasting expired {this.getSecondsExpired(item.item.date, item.item.numberofdays)} seconds ago</p>}							
 							 </div>
 							   
 							:	  
 							 <div> 
-							  {this.state.days && <p>Days left: {this.getDaysLeft(item.item.date)}</p>}
-							  {this.state.hours && <p>Hours left: {this.getHoursLeft(item.item.date)}</p>}
-							  {this.state.minutes && <p>Minutes left: {this.getMinutesLeft(item.item.date)}</p>}
-							  {this.state.seconds && <p>Seconds left: {this.getSecondsLeft(item.item.date)}</p>}
+							  {this.state.days && <p>Days left: {this.getDaysLeft(item.item.date, item.item.numberofdays)}</p>}
+							  {this.state.hours && <p>Hours left: {this.getHoursLeft(item.item.date, item.item.numberofdays)}</p>}
+							  {this.state.minutes && <p>Minutes left: {this.getMinutesLeft(item.item.date, item.item.numberofdays)}</p>}
+							  {this.state.seconds && <p>Seconds left: {this.getSecondsLeft(item.item.date, item.item.numberofdays)}</p>}
 							 </div> 
 					      }
-						  <p>{item.item.message}</p>
+						  <p>Dear heavenly Father, help me to {item.item.message} for {item.item.numberofdays} days, in Jesus' name, Amen.</p>
 						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete
 							   </button>

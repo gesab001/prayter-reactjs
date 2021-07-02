@@ -13,7 +13,8 @@ class Compose extends Component {
 	  fastlist: [], 
 	  inputField: null,
 	  fastForm: false,
-	  prayerForm: true
+	  prayerForm: true,
+	  fastingperiod: 60
     };
 	
 	//this.inputField = React.createRef();
@@ -22,7 +23,8 @@ class Compose extends Component {
 
     newFastHandler = (event) => {
           //console.log(event.currentTarget.innerHTML);
-		  var fast = "Dear heavenly Father, help me to fast from " +  event.currentTarget.innerHTML + " for 60 days, in Jesus' name, Amen";
+		  var fast = event.currentTarget.innerText;
+		  console.log(event.currentTarget);
 		  this.setState({newfast: fast});
 		  this.setState({inputField: event.currentTarget});
 
@@ -36,7 +38,7 @@ class Compose extends Component {
 		var message = this.state.newfast;
 		var dateNow = Date.now();
 		var recurring = false;
-		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
+		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring, "numberofdays": this.state.fastingperiod.toString()};
 		addToFirestore(room, item);
 		this.state.inputField.innerHTML = "";
 
@@ -76,6 +78,11 @@ class Compose extends Component {
 			this.setState({fastForm: true, prayerForm: false});
 
 		}
+		else if (event.target.id==="fastingperiod"){
+			console.log(event.currentTarget.value);
+			this.setState({fastingperiod: event.currentTarget.value});
+
+		}
 	}
 	
 
@@ -108,9 +115,9 @@ class Compose extends Component {
 		     <div>
                   
 			       <h1>New fast</h1>
-				   <div>Dear heavenly Father, help me to fast from  </div>
+				   <div>Dear heavenly Father, help me to  </div>
 				   <div contentEditable onInput = {(event) => this.newFastHandler(event)}></div>
-				   <div>for 60 days, in Jesus' name, Amen.</div>
+				   <div>for <span><input id="fastingperiod" onChange = {(event) => this.onViewChange(event)} type="number"/></span> days, in Jesus' name, Amen.</div>
 				   <button  onClick = {(event) => {this.addFast(event)}}>
 						Send
 				   </button>
