@@ -48,7 +48,7 @@ class Compose extends Component {
 
     newprayerHandler = (event) => {
           //console.log(event.currentTarget.innerHTML);
-		  var prayer = "Dear heavenly Father,  " +  event.currentTarget.innerHTML + " in Jesus' name, Amen";
+		  var prayer = "Dear heavenly Father,  " +  event.currentTarget.innerText + " in Jesus' name, Amen";
 		  this.setState({message: prayer});
 		  this.setState({inputField: event.currentTarget});
 		  
@@ -62,7 +62,7 @@ class Compose extends Component {
 		var message = this.state.message;
 		var dateNow = Date.now();
 		var recurring = false;
-		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring};
+		var item = {"author": author, "userId": userId, "message": message, "date": dateNow, "recurring": recurring, "numberofdays": "0"};
 		addToFirestore(room, item);
 		this.state.inputField.innerHTML = "";
 

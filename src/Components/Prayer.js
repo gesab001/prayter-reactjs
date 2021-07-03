@@ -517,7 +517,7 @@ class Prayer extends Component {
 							  {this.state.seconds && <p>Seconds left: {this.getSecondsLeft(item.item.date, item.item.numberofdays)}</p>}
 							 </div> 
 					      }
-						  <p>Dear heavenly Father, help me to {item.item.message} for {item.item.numberofdays} days, in Jesus' name, Amen.</p>
+						  <p>Dear heavenly Father, help me to {item.item.message} for {item.item.numberofdays} {item.item.numberofdays=="1" && <span>day</span>} {item.item.numberofdays!="1" && <span>days</span>}, in Jesus' name, Amen.</p>
 						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete
 							   </button>
