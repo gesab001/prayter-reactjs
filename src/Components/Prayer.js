@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import {auth, db, addToFirestore, deleteFromFirestore, getWeek, amen} from "../firebase";
+import {auth, db, addToFirestore, deleteFromFirestore, getWeek, amen, updateRenewFastItemFirestore} from "../firebase";
 import "./Prayer.css";
-
+import praystyle from './Prayer.module.css'; 
 class Prayer extends Component {
 
  constructor(props) {
@@ -30,7 +30,12 @@ class Prayer extends Component {
 	  dayCounter: 0,
 	  weekCounter: 0,
 	  monthCounter: 0,
-	  yearCounter: 0
+	  yearCounter: 0,
+	  renew: false,
+	  fastingperiod: 60,
+	  newfast: null,
+	  newfastid: null,
+	  inputField: null
     };
 
     this.unsubscribe = undefined;
@@ -131,6 +136,8 @@ class Prayer extends Component {
 					}
 				});
 	    this.setState({list2: items});
+	    console.log("ondatachange2");
+	    console.log(this.state.list2);
    }
 
    onDataChangeCounterHour(doc){
@@ -192,13 +199,56 @@ class Prayer extends Component {
 		console.log(error.message);
 	 }
    }
-      
-  	renewItem = (event, room, id) => {
-         alert("renew fast");
 
+    newFastHandler = (event) => {
+          //console.log(event.currentTarget.innerHTML);
+		  var fast = event.currentTarget.innerText;
+		  console.log(event.currentTarget);
+		  this.setState({newfast: fast});
+		  this.setState({inputField: event.currentTarget});
+
+    };
+      
+      
+      	onViewChange = (event) => {
+		console.log(event.target.id);
+		if (event.target.id==="prayer"){
+			this.setState({fastForm: false, prayerForm:true});
+		}
+		else if (event.target.id==="fasting"){
+			this.setState({fastForm: true, prayerForm: false});
+
+		}
+		else if (event.target.id==="fastingperiod"){
+			console.log(event.currentTarget.value);
+			this.setState({fastingperiod: event.currentTarget.value});
+
+		}
+	}
+	    
+  	showRenewItem = (event, message, numberofdays, docId) => {
+
+         this.setState({renew: true, newfast: message, newfastId: docId, fastingperiod: numberofdays});
 		 
 	}
 
+  	hideRenewItem = () => {
+
+         this.setState({renew: false});
+		 
+	}
+ 	renewFast = (event, room, id) => {
+
+		var room = "fasting";
+		var userId = auth.currentUser.uid;
+		var message = this.state.newfast;
+		var dateNow = Date.now();
+		var item = {"docId": this.state.newfastId, "userId": userId, "message": message, "date": dateNow, "numberofdays": this.state.fastingperiod.toString()};
+		updateRenewFastItemFirestore(room, item);
+		this.hideRenewItem();
+
+		 
+	}
   	replyItem = (event, room, id) => {
          alert("reply to prayer");
 
@@ -377,6 +427,23 @@ class Prayer extends Component {
 	 const emptySpaceStyle = {height: "calc(6.5625rem)"};
 	 return (
 	    <div >
+	     {this.state.renew &&  
+	                 <div className={praystyle.modal}>
+
+				  <div className={praystyle.modalContent}>
+				    <span onClick = {(event) => {this.hideRenewItem()}} className={praystyle.close}>&times;</span>
+  					 <h1>Fast renewal</h1>
+				   <div>Dear heavenly Father, help me to  </div>
+				   <div contentEditable  contentEditable onInput = {(event) => this.newFastHandler(event)}>{this.state.newfast}</div>
+				   <div>for <span><input id="fastingperiod" onChange = {(event) => this.onViewChange(event)} type="number" value={this.state.fastingperiod}/></span> days, in Jesus' name, Amen.</div>
+				   <button  onClick = {(event) => {this.renewFast(event)}}>
+						Update
+				   </button>
+				  </div>
+
+			    
+
+			 </div>}
              <h1>Prayer</h1>
 			 <div>
 			     <p>Total prayers this hour: {this.state.hourCounter}</p>
@@ -454,7 +521,7 @@ class Prayer extends Component {
 						   <button style={mystyle}  onClick = {(event) => {this.deleteItem(event, "fasting", item.id)}}>
 									Delete
 							   </button>
-						   <button style={mystyle}  onClick = {(event) => {this.renewItem(event, "fasting", item.id)}}>
+						   <button style={mystyle}  onClick = {(event) => {this.showRenewItem(event, item.item.message, item.item.numberofdays, item.id)}}>
 									Renew
 							   </button>
 						  </div>

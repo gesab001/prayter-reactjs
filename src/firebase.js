@@ -35,7 +35,7 @@ export const addToFirestore = (room, item) => {
 	console.log("add: " + room);
 	var docRef = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("messages");
 	    docRef.add({
-              author: item.author,
+                         author: item.author,
 			  userId: item.userId,
 			  message: item.message,
 			  date: item.date,
@@ -163,6 +163,23 @@ export const amen = (room, userId, id) => {
 	});
 
 	
+}
+
+export const updateRenewFastItemFirestore = (room, item) => {
+
+	var docRef = db.collection("rooms").doc(room).collection("private").doc(item.userId).collection("messages");
+        docRef.doc(item.docId).update({
+			  message: item.message,
+			  date: item.date,
+			  numberofdays: item.numberofdays
+	})
+	.then(() => {
+	    console.log("Document successfully updated!");
+	})
+	.catch((error) => {
+	    // The document probably doesn't exist.
+	    console.error("Error updating document: ", error);
+	});
 }
 
 export const deleteFromFirestore = (room, userId, id) => {
