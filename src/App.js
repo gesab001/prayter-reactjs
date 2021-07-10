@@ -240,7 +240,7 @@ class App extends Component {
 		return (
 		<div className="loginContainer">
             <div className="left">
-               <p>Your ultimate app to overcoming sin. </p>
+               <p>Your ultimate app for overcoming sin. </p>
                <p>Join now to experience the power.</p>
             </div>
 				 

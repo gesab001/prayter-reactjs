@@ -124,7 +124,13 @@ class Prayer extends Component {
 						
 					}
 					if (change.type === "modified") {
-					//	console.log("Modified prayer: ", change.doc.data());
+						console.log("Modified prayer: ", change.doc.data());
+                                              var filtered = items.filter(function(value, index, arr){
+						    return value.id!=item.id;
+						});
+						items = filtered;	
+			                       items.unshift(item);
+											
 						
 					}
 					if (change.type === "removed") {
@@ -500,7 +506,7 @@ class Prayer extends Component {
 						  <div  className="article" >
 						  <p>From: {this.getStartDate(item.item.date)}</p>
 						  <p>To: {this.getEndDate(item.item.date, item.item.numberofdays)}</p>
-                          {this.isExpired(item.item.date, 5)
+                          {this.isExpired(item.item.date, item.item.numberofdays)
 				?
 							 <div>
 							  {this.state.days && <p>Fasting expired {this.getDaysExpired(item.item.date, item.item.numberofdays)} days ago</p>}
